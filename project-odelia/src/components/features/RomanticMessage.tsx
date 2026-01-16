@@ -86,12 +86,14 @@ export default function RomanticMessage() {
         animate={{ opacity: 1 }}
         transition={{ delay: 2.1, duration: 0.8 }}
       >
-        {/* Water droplet */}
-        <motion.div
-          className="w-4 h-4 rounded-full bg-water-400"
+        {/* Water symbol */}
+        <motion.img
+          src="/images/water_symbol.jpg"
+          alt="Water Symbol"
+          className="w-8 h-8 md:w-10 md:h-10 object-contain"
           animate={{
             y: [0, -10, 0],
-            opacity: [0.3, 1, 0.3],
+            scale: [1, 1.1, 1],
           }}
           transition={{
             duration: 2,
@@ -101,15 +103,14 @@ export default function RomanticMessage() {
           }}
         />
 
-        {/* Fire flame */}
-        <motion.div
-          className="w-4 h-4 bg-fire-400"
-          style={{
-            clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
-          }}
+        {/* Fire symbol */}
+        <motion.img
+          src="/images/fire_symbol.jpg"
+          alt="Fire Symbol"
+          className="w-8 h-8 md:w-10 md:h-10 object-contain"
           animate={{
             y: [0, -12, 0],
-            opacity: [0.5, 1, 0.5],
+            scale: [1, 1.15, 1],
           }}
           transition={{
             duration: 1.8,
@@ -119,12 +120,14 @@ export default function RomanticMessage() {
           }}
         />
 
-        {/* Earth rock/crystal */}
-        <motion.div
-          className="w-4 h-4 rounded-sm bg-jade-400"
+        {/* Earth symbol */}
+        <motion.img
+          src="/images/earth_symbol.jpg"
+          alt="Earth Symbol"
+          className="w-8 h-8 md:w-10 md:h-10 object-contain"
           animate={{
-            rotate: [0, 180, 360],
-            opacity: [0.4, 1, 0.4],
+            rotate: [0, 5, 0, -5, 0],
+            scale: [1, 1.1, 1],
           }}
           transition={{
             duration: 3,
@@ -134,13 +137,15 @@ export default function RomanticMessage() {
           }}
         />
 
-        {/* Air swirl */}
-        <motion.div
-          className="w-4 h-4 rounded-full bg-air-400"
+        {/* Air symbol */}
+        <motion.img
+          src="/images/air_symbol.jpg"
+          alt="Air Symbol"
+          className="w-8 h-8 md:w-10 md:h-10 object-contain"
           animate={{
             x: [-5, 5, -5],
             y: [0, -8, 0],
-            opacity: [0.4, 1, 0.4],
+            scale: [1, 1.1, 1],
           }}
           transition={{
             duration: 2.5,

@@ -15,16 +15,18 @@ export default function ElementCard({ element, isMastered, onClick }: ElementCar
 
   if (!config) return null;
 
-  // Render element-specific symbol
+  // Render element-specific symbol using actual ATLA symbols
   const renderSymbol = () => {
     switch (element) {
       case 'water':
         return (
-          <motion.div
-            className="w-16 h-16 bg-water-400 rounded-full"
+          <motion.img
+            src="/images/water_symbol.jpg"
+            alt="Water Symbol"
+            className="w-16 h-16 md:w-20 md:h-20 object-contain"
             animate={{
               y: [0, -10, 0],
-              opacity: [0.7, 1, 0.7],
+              scale: [1, 1.05, 1],
             }}
             transition={{
               duration: 2,
@@ -35,12 +37,13 @@ export default function ElementCard({ element, isMastered, onClick }: ElementCar
         );
       case 'fire':
         return (
-          <motion.div
-            className="w-16 h-16 bg-fire-400"
-            style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}
+          <motion.img
+            src="/images/fire_symbol.jpg"
+            alt="Fire Symbol"
+            className="w-16 h-16 md:w-20 md:h-20 object-contain"
             animate={{
               y: [0, -12, 0],
-              opacity: [0.7, 1, 0.7],
+              scale: [1, 1.1, 1],
             }}
             transition={{
               duration: 1.8,
@@ -51,11 +54,13 @@ export default function ElementCard({ element, isMastered, onClick }: ElementCar
         );
       case 'earth':
         return (
-          <motion.div
-            className="w-16 h-16 bg-jade-400 rounded-sm"
+          <motion.img
+            src="/images/earth_symbol.jpg"
+            alt="Earth Symbol"
+            className="w-16 h-16 md:w-20 md:h-20 object-contain"
             animate={{
-              rotate: [0, 180, 360],
-              opacity: [0.7, 1, 0.7],
+              rotate: [0, 5, 0, -5, 0],
+              scale: [1, 1.05, 1],
             }}
             transition={{
               duration: 3,
@@ -66,12 +71,14 @@ export default function ElementCard({ element, isMastered, onClick }: ElementCar
         );
       case 'air':
         return (
-          <motion.div
-            className="w-16 h-16 bg-air-400 rounded-full"
+          <motion.img
+            src="/images/air_symbol.jpg"
+            alt="Air Symbol"
+            className="w-16 h-16 md:w-20 md:h-20 object-contain"
             animate={{
               x: [-5, 5, -5],
               y: [0, -8, 0],
-              opacity: [0.7, 1, 0.7],
+              scale: [1, 1.05, 1],
             }}
             transition={{
               duration: 2.5,
@@ -88,13 +95,16 @@ export default function ElementCard({ element, isMastered, onClick }: ElementCar
   return (
     <motion.button
       onClick={onClick}
-      className={`bg-white p-6 md:p-8 rounded-xl relative overflow-hidden min-h-[160px] md:min-h-[200px] flex flex-col items-center justify-center gap-3 md:gap-4 border-4 w-full`}
-      style={{ borderColor: config.colors.primary }}
+      className="bg-white p-6 md:p-8 rounded-xl relative overflow-hidden min-h-[160px] md:min-h-[200px] flex flex-col items-center justify-center gap-3 md:gap-4 border-4 border-white w-full shadow-md"
       whileHover={{
         scale: 1.03,
         boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+        borderColor: config.colors.primary,
       }}
-      whileTap={{ scale: 0.98 }}
+      whileTap={{
+        scale: 0.98,
+        borderColor: config.colors.primary,
+      }}
       transition={{ duration: 0.2 }}
     >
       {/* Element Symbol */}

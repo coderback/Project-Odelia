@@ -106,27 +106,14 @@ export default function ElementMastery({ element, onComplete, onBack }: ElementM
                   : 'linear-gradient(135deg, #fde047 0%, #facc15 50%, #eab308 100%)'
               }}
             >
-              <motion.div
+              <motion.img
+                src={`/images/${element}_symbol.jpg`}
+                alt={`${element} symbol`}
+                className="w-12 h-12 md:w-16 md:h-16 object-contain rounded-full"
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.4 }}
-              >
-                {element === 'water' && (
-                  <div className="w-12 h-12 md:w-16 md:h-16 bg-white rounded-full opacity-90" />
-                )}
-                {element === 'fire' && (
-                  <div
-                    className="w-12 h-12 md:w-16 md:h-16 bg-white opacity-90"
-                    style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}
-                  />
-                )}
-                {element === 'earth' && (
-                  <div className="w-12 h-12 md:w-16 md:h-16 bg-white rounded-sm opacity-90 rotate-45" />
-                )}
-                {element === 'air' && (
-                  <div className="w-12 h-12 md:w-16 md:h-16 bg-white rounded-full opacity-90" />
-                )}
-              </motion.div>
+              />
             </motion.div>
 
             {/* Success Message */}
