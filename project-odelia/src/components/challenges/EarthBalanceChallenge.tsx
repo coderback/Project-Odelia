@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Rock {
-  id: number;
+  id: string;
   x: number;
   caught: boolean;
 }
@@ -17,22 +17,34 @@ export default function EarthBalanceChallenge({ onSuccess }: EarthBalanceChallen
   const [rocks, setRocks] = useState<Rock[]>([]);
   const [caughtCount, setCaughtCount] = useState(0);
   const totalRocks = 5;
+  const rockIdCounter = useRef(0);
+  const hasSpawned = useRef(false);
 
   // Spawn rocks one by one
   useEffect(() => {
-    const spawnDelays = [0, 2000, 4000, 6000, 8000];
-    const baseId = Date.now();
+    // Prevent double-spawning in React Strict Mode
+    if (hasSpawned.current) return;
+    hasSpawned.current = true;
 
-    spawnDelays.forEach((delay, index) => {
-      setTimeout(() => {
+    const spawnDelays = [0, 2000, 4000, 6000, 8000];
+    const timeouts: NodeJS.Timeout[] = [];
+
+    spawnDelays.forEach((delay) => {
+      const timeout = setTimeout(() => {
+        rockIdCounter.current += 1;
         const newRock: Rock = {
-          id: baseId + index * 1000, // Ensure unique IDs with larger gaps
+          id: `rock-${rockIdCounter.current}`,
           x: 20 + Math.random() * 60, // Random x position (20-80%)
           caught: false,
         };
         setRocks((prev) => [...prev, newRock]);
       }, delay);
+      timeouts.push(timeout);
     });
+
+    return () => {
+      timeouts.forEach(clearTimeout);
+    };
   }, []);
 
   // Check if all caught
@@ -44,7 +56,7 @@ export default function EarthBalanceChallenge({ onSuccess }: EarthBalanceChallen
     }
   }, [caughtCount, onSuccess]);
 
-  const handleRockClick = (rockId: number) => {
+  const handleRockClick = (rockId: string) => {
     setRocks((prev) =>
       prev.map((rock) =>
         rock.id === rockId && !rock.caught ? { ...rock, caught: true } : rock
