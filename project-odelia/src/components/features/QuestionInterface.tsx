@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { questionVariants } from '@/lib/animations';
-import WaterButton from '../ui/WaterButton';
+import ElementButton from '../ui/ElementButton';
 import DodgyButton from '../ui/DodgyButton';
 import RippleEffect from '../ui/RippleEffect';
 import ConfettiEffect from '../ui/ConfettiEffect';
@@ -101,7 +101,7 @@ export default function QuestionInterface() {
     }
 
     // Show a gentle message
-    alert('💔 The water is sad... but it flows on. Perhaps you will reconsider?');
+    alert('💔 The elements are out of balance... The Moon weeps, the Dragons dim their flame, the Badgermoles retreat into stone, and the Sky Bison fly away. Perhaps you will reconsider bringing harmony back?');
     setState('idle');
     setAnswer(null);
   }, [state, dodgeCount, startTime]);
@@ -184,9 +184,10 @@ export default function QuestionInterface() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.6 }}
             >
-              <WaterButton
+              <ElementButton
                 onClick={handleYesClick}
                 disabled={state !== 'idle'}
+                element="all"
               />
               <DodgyButton onClick={handleNoClick} disabled={state !== 'idle'} />
             </motion.div>

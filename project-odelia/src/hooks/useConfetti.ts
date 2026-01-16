@@ -19,8 +19,15 @@ export function useConfetti() {
       });
     }
 
-    // Water-themed confetti colors
-    const colors = ['#38bdf8', '#2dd4bf', '#fda4af', '#fbbf24', '#e0f2fe'];
+    // All four elements confetti colors
+    const colors = [
+      '#38bdf8', // Water
+      '#f97316', // Fire
+      '#10b981', // Earth/Jade
+      '#facc15', // Air
+      '#2dd4bf', // Teal accent
+      '#fb923c', // Orange accent
+    ];
 
     // First burst from center
     setTimeout(() => {

@@ -3,8 +3,22 @@
 @tailwind utilities;
 
 @layer base {
-  /* Import Google Fonts */
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Tangerine:wght@400;700&family=Cinzel:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap');
+  /* Custom Font Declarations */
+  @font-face {
+    font-family: 'Avatar Airbender';
+    src: url('/fonts/Avatar Airbender - Header font.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Herculanum';
+    src: url('/fonts/Herculanum Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
 
   :root {
     --foreground-rgb: 0, 0, 0;
@@ -30,7 +44,7 @@
       rgb(var(--background-end))
     );
     min-height: 100vh;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Herculanum', system-ui, -apple-system, sans-serif;
   }
 
   /* Reduced motion support */
@@ -52,12 +66,49 @@
     text-wrap: balance;
   }
 
+  /* Water gradients */
   .water-gradient {
-    background: linear-gradient(135deg, #38bdf8 0%, #2dd4bf 50%, #0ea5e9 100%);
+    background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 50%, #0ea5e9 100%);
   }
 
   .water-gradient-hover {
-    background: linear-gradient(135deg, #0ea5e9 0%, #14b8a6 50%, #0284c7 100%);
+    background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 50%, #0284c7 100%);
+  }
+
+  /* Fire gradients - vibrant like water */
+  .fire-gradient {
+    background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #dc2626 100%);
+  }
+
+  .fire-gradient-hover {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+  }
+
+  /* Earth gradients - vibrant jade like water */
+  .earth-gradient {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
+  }
+
+  .earth-gradient-hover {
+    background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+  }
+
+  /* Air gradients - vibrant yellow like water */
+  .air-gradient {
+    background: linear-gradient(135deg, #fde047 0%, #facc15 50%, #eab308 100%);
+  }
+
+  .air-gradient-hover {
+    background: linear-gradient(135deg, #facc15 0%, #eab308 50%, #ca8a04 100%);
+  }
+
+  /* Avatar (all elements blended) gradient */
+  .avatar-gradient {
+    background: linear-gradient(135deg, #38bdf8 0%, #f97316 25%, #10b981 50%, #facc15 100%);
+  }
+
+  .avatar-gradient-hover {
+    background: linear-gradient(135deg, #0ea5e9 0%, #ea580c 25%, #059669 50%, #ca8a04 100%);
   }
 
   .parchment-texture {
@@ -66,23 +117,14 @@
   }
 }
 
-/* Custom scrollbar for water theme */
+/* Hide scrollbars for cleaner look */
 ::-webkit-scrollbar {
-  width: 12px;
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  background: #fdf4e7;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #38bdf8, #2dd4bf);
-  border-radius: 6px;
-  border: 2px solid #fdf4e7;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #0ea5e9, #14b8a6);
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 /* Focus visible styles for accessibility */

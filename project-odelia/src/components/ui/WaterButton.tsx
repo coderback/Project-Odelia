@@ -24,16 +24,17 @@ export default function WaterButton({ onClick, disabled = false }: WaterButtonPr
         font-bold
         text-white
         rounded-2xl
-        water-gradient
-        hover:water-gradient-hover
         transition-all
         duration-300
         disabled:opacity-50
         disabled:cursor-not-allowed
-        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-water-400
+        focus-visible:outline-none
         overflow-hidden
         group
       "
+      style={{
+        background: 'linear-gradient(135deg, #7dd3fc 0%, #38bdf8 50%, #0ea5e9 100%)',
+      }}
       aria-label="Click to say YES to being my Valentine"
     >
       {/* Glow effect */}
