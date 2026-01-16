@@ -2,6 +2,9 @@
 
 export type Answer = 'yes' | 'no';
 
+// Element types
+export type ElementType = 'water' | 'fire' | 'earth' | 'air' | 'all';
+
 export interface ResponseData {
   answer: Answer;
   sessionId?: string;
