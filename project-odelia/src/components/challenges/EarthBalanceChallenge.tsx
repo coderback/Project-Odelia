@@ -13,39 +13,44 @@ interface EarthBalanceChallengeProps {
   onSuccess: () => void;
 }
 
+// Generate unique ID outside component to avoid React Strict Mode issues
+let globalRockId = 0;
+
 export default function EarthBalanceChallenge({ onSuccess }: EarthBalanceChallengeProps) {
   const [rocks, setRocks] = useState<Rock[]>([]);
   const [caughtCount, setCaughtCount] = useState(0);
   const totalRocks = 5;
-  const rockIdCounter = useRef(0);
-  const hasSpawned = useRef(false);
+  const spawningStarted = useRef(false);
 
-  // Spawn rocks one by one
+  // Spawn a new rock
+  const spawnRock = () => {
+    globalRockId += 1;
+    const newRock: Rock = {
+      id: `rock-${globalRockId}-${Date.now()}`,
+      x: 20 + Math.random() * 60, // Random x position (20-80%)
+      caught: false,
+    };
+    setRocks((prev) => [...prev, newRock]);
+  };
+
+  // Initial rock spawning
   useEffect(() => {
-    // Prevent double-spawning in React Strict Mode
-    if (hasSpawned.current) return;
-    hasSpawned.current = true;
+    if (spawningStarted.current) return;
+    spawningStarted.current = true;
 
     const spawnDelays = [0, 2000, 4000, 6000, 8000];
-    const timeouts: NodeJS.Timeout[] = [];
 
     spawnDelays.forEach((delay) => {
-      const timeout = setTimeout(() => {
-        rockIdCounter.current += 1;
-        const newRock: Rock = {
-          id: `rock-${rockIdCounter.current}`,
-          x: 20 + Math.random() * 60, // Random x position (20-80%)
-          caught: false,
-        };
-        setRocks((prev) => [...prev, newRock]);
-      }, delay);
-      timeouts.push(timeout);
+      setTimeout(spawnRock, delay);
     });
-
-    return () => {
-      timeouts.forEach(clearTimeout);
-    };
   }, []);
+
+  // Handle when a rock is missed (falls off screen) - spawn a replacement
+  const handleRockMissed = (rockId: string) => {
+    setRocks((prev) => prev.filter((rock) => rock.id !== rockId));
+    // Spawn a new rock after a short delay
+    setTimeout(spawnRock, 500);
+  };
 
   // Check if all caught
   useEffect(() => {
@@ -103,7 +108,7 @@ export default function EarthBalanceChallenge({ onSuccess }: EarthBalanceChallen
               animate={
                 rock.caught
                   ? {
-                      y: rock.caught ? [null, -20] : 500,
+                      y: [null, -20],
                       rotate: [null, 45],
                       scale: [null, 1.2, 1.2],
                     }
@@ -123,6 +128,12 @@ export default function EarthBalanceChallenge({ onSuccess }: EarthBalanceChallen
                       rotate: { duration: 5, ease: 'linear' },
                     }
               }
+              onAnimationComplete={() => {
+                // If rock finished falling animation and wasn't caught, spawn a new one
+                if (!rock.caught) {
+                  handleRockMissed(rock.id);
+                }
+              }}
               onClick={() => handleRockClick(rock.id)}
               disabled={rock.caught}
               whileHover={!rock.caught ? { scale: 1.1 } : {}}

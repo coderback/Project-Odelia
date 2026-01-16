@@ -37,7 +37,7 @@ export default function ElementHub({ masteredElements, onSelectElement, onAllCom
           Master the Four Elements, Odelia
         </motion.h1>
         <motion.p
-          className="text-base md:text-xl text-gray-600"
+          className="text-base md:text-xl text-gray-600 font-calligraphy"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
