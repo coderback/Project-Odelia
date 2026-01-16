@@ -35,16 +35,14 @@ export default function ParchmentCard({ children, className = '' }: ParchmentCar
       <div className="absolute bottom-0 left-0 w-16 h-16 border-l-2 border-b-2 border-water-400/30 rounded-bl-2xl" />
       <div className="absolute bottom-0 right-0 w-16 h-16 border-r-2 border-b-2 border-water-400/30 rounded-br-2xl" />
 
-      {/* Water symbol decoration at top */}
+      {/* Avatar symbol decoration at top */}
       <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-        <div className="w-16 h-16 rounded-full bg-parchment-200 border-2 border-water-400/30 flex items-center justify-center shadow-water-md">
-          <svg
-            className="w-8 h-8 text-water-500"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
-          </svg>
+        <div className="w-16 h-16 rounded-full bg-parchment-200 border-2 border-parchment-400/30 flex items-center justify-center shadow-md overflow-hidden">
+          <img
+            src="/images/avatar_symbol.png"
+            alt="Avatar Symbol"
+            className="w-12 h-12 object-contain"
+          />
         </div>
       </div>
 
