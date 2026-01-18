@@ -1,273 +1,422 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface AirGuideChallengeProps {
   onSuccess: () => void;
 }
 
+interface Cloud {
+  id: number;
+  symbol: string;
+  symbolName: string;
+  x: number;
+  y: number;
+  speedX: number;
+  speedY: number;
+  revealed: boolean;
+  matched: boolean;
+  size: number;
+}
+
+const SYMBOLS = [
+  { symbol: '🌀', name: 'Air Swirl' },
+  { symbol: '🦬', name: 'Sky Bison' },
+  { symbol: '🪁', name: 'Glider' },
+];
+
+let cloudIdCounter = 0;
+
+function createClouds(): Cloud[] {
+  const clouds: Cloud[] = [];
+
+  // Create pairs of clouds (6 total = 3 pairs)
+  SYMBOLS.forEach((s) => {
+    // First of pair
+    clouds.push({
+      id: ++cloudIdCounter,
+      symbol: s.symbol,
+      symbolName: s.name,
+      x: 10 + Math.random() * 30, // Left side
+      y: 15 + Math.random() * 60,
+      speedX: 0.02 + Math.random() * 0.02,
+      speedY: (Math.random() - 0.5) * 0.01,
+      revealed: false,
+      matched: false,
+      size: 80 + Math.random() * 20,
+    });
+    // Second of pair
+    clouds.push({
+      id: ++cloudIdCounter,
+      symbol: s.symbol,
+      symbolName: s.name,
+      x: 55 + Math.random() * 30, // Right side
+      y: 15 + Math.random() * 60,
+      speedX: 0.02 + Math.random() * 0.02,
+      speedY: (Math.random() - 0.5) * 0.01,
+      revealed: false,
+      matched: false,
+      size: 80 + Math.random() * 20,
+    });
+  });
+
+  return clouds;
+}
+
 export default function AirGuideChallenge({ onSuccess }: AirGuideChallengeProps) {
-  const [particlePos, setParticlePos] = useState({ x: 100, y: 250 });
-  const [cursorPos, setCursorPos] = useState({ x: 100, y: 250 });
-  const [ringsReached, setRingsReached] = useState<Set<number>>(new Set());
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [clouds, setClouds] = useState<Cloud[]>(() => createClouds());
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [matchedCount, setMatchedCount] = useState(0);
+  const animationRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number>(0);
 
-  // 3 waypoint rings
-  const rings = [
-    { id: 0, x: 250, y: 200, radius: 50 },
-    { id: 1, x: 400, y: 300, radius: 50 },
-    { id: 2, x: 550, y: 200, radius: 50 },
-  ];
+  // Check win condition
+  useEffect(() => {
+    if (matchedCount === 3) {
+      setTimeout(() => {
+        onSuccess();
+      }, 800);
+    }
+  }, [matchedCount, onSuccess]);
 
-  // Target (after all rings)
-  const target = { x: 650, y: 250, radius: 60 };
+  // Animate drifting clouds
+  useEffect(() => {
+    const animate = (time: number) => {
+      if (!lastTimeRef.current) lastTimeRef.current = time;
+      const delta = time - lastTimeRef.current;
+      lastTimeRef.current = time;
 
-  // Handle mouse/touch movement
-  const handlePointerMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!containerRef.current) return;
+      setClouds(prev => prev.map(cloud => {
+        if (cloud.matched) return cloud;
 
-    const rect = containerRef.current.getBoundingClientRect();
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+        let newX = cloud.x + cloud.speedX * delta * 0.05;
+        let newY = cloud.y + cloud.speedY * delta * 0.05;
 
-    const x = ((clientX - rect.left) / rect.width) * 700;
-    const y = ((clientY - rect.top) / rect.height) * 500;
+        // Wrap around horizontally
+        if (newX > 100) newX = -15;
+        if (newX < -15) newX = 100;
 
-    setCursorPos({ x, y });
+        // Bounce vertically
+        if (newY > 80 || newY < 10) {
+          return { ...cloud, x: newX, speedY: -cloud.speedY };
+        }
+
+        return { ...cloud, x: newX, y: newY };
+      }));
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
+
+  // Handle cloud click
+  const handleCloudClick = (cloudId: number) => {
+    const cloud = clouds.find(c => c.id === cloudId);
+    if (!cloud || cloud.matched) return;
+
+    if (selectedId === null) {
+      // First selection - reveal the cloud
+      setSelectedId(cloudId);
+      setClouds(prev => prev.map(c =>
+        c.id === cloudId ? { ...c, revealed: true } : c
+      ));
+    } else if (selectedId === cloudId) {
+      // Deselect same cloud
+      setSelectedId(null);
+      setClouds(prev => prev.map(c =>
+        c.id === cloudId ? { ...c, revealed: false } : c
+      ));
+    } else {
+      // Second selection - reveal and check for match
+      setClouds(prev => prev.map(c =>
+        c.id === cloudId ? { ...c, revealed: true } : c
+      ));
+
+      const firstCloud = clouds.find(c => c.id === selectedId);
+
+      if (firstCloud && firstCloud.symbol === cloud.symbol) {
+        // Match found!
+        setTimeout(() => {
+          setClouds(prev => prev.map(c =>
+            c.id === selectedId || c.id === cloudId
+              ? { ...c, matched: true }
+              : c
+          ));
+          setMatchedCount(prev => prev + 1);
+        }, 400);
+      } else {
+        // No match - hide both after delay
+        setTimeout(() => {
+          setClouds(prev => prev.map(c =>
+            c.id === selectedId || c.id === cloudId
+              ? { ...c, revealed: false }
+              : c
+          ));
+        }, 800);
+      }
+      setSelectedId(null);
+    }
   };
 
-  // Move particle toward cursor (magnetic attraction)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setParticlePos((prev) => {
-        const dx = cursorPos.x - prev.x;
-        const dy = cursorPos.y - prev.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < 5) return prev;
-
-        const speed = 4; // pixels per frame
-        return {
-          x: prev.x + (dx / distance) * speed,
-          y: prev.y + (dy / distance) * speed,
-        };
-      });
-    }, 30); // ~30 FPS
-
-    return () => clearInterval(interval);
-  }, [cursorPos]);
-
-  // Check collision with rings and target
-  useEffect(() => {
-    // Check rings
-    rings.forEach((ring) => {
-      const dx = particlePos.x - ring.x;
-      const dy = particlePos.y - ring.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < ring.radius && !ringsReached.has(ring.id)) {
-        setRingsReached((prev) => new Set(prev).add(ring.id));
-      }
-    });
-
-    // Check target (only if all rings completed)
-    if (ringsReached.size === 3) {
-      const dx = particlePos.x - target.x;
-      const dy = particlePos.y - target.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < target.radius) {
-        setTimeout(() => {
-          onSuccess();
-        }, 500);
-      }
-    }
-  }, [particlePos, ringsReached, onSuccess]);
-
   return (
-    <div className="relative w-full max-w-4xl mx-auto p-2 md:p-4">
+    <div className="relative w-full max-w-3xl mx-auto p-2 md:p-4">
       {/* Title and Instructions */}
       <div className="text-center mb-4 md:mb-6 px-2">
         <h3 className="text-xl md:text-2xl font-display font-bold text-air-700 mb-2">
-          Sky Bison Wind Guide
+          Sky Bison Cloud Match
         </h3>
         <p className="text-sm md:text-lg text-gray-600">
-          Move your cursor to guide the wind through all waypoints
+          Like Appa finding his way home, unite the sky spirits
         </p>
         <div className="mt-2">
           <span className="text-lg md:text-xl font-bold text-air-500">
-            {ringsReached.size}/3 Waypoints Reached
+            {matchedCount}/3 Pairs Matched
           </span>
         </div>
       </div>
 
-      {/* Game Canvas */}
-      <div
-        ref={containerRef}
-        className="relative bg-gradient-to-br from-air-50 to-sky-50 rounded-lg shadow-inner overflow-hidden cursor-none touch-none"
-        style={{ height: '400px', maxHeight: '500px' }}
-        onMouseMove={handlePointerMove}
-        onTouchMove={handlePointerMove}
-      >
-        <svg viewBox="0 0 700 500" className="w-full h-full">
-          {/* Waypoint Rings */}
-          {rings.map((ring) => {
-            const isReached = ringsReached.has(ring.id);
+      {/* Game Canvas - Sky */}
+      <div className="relative bg-gradient-to-b from-sky-300 via-sky-200 to-yellow-100 rounded-lg shadow-inner overflow-hidden" style={{ height: '400px' }}>
+        {/* Sun */}
+        <motion.div
+          className="absolute top-4 right-8 w-16 h-16 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-400"
+          style={{ boxShadow: '0 0 60px rgba(250, 204, 21, 0.6)' }}
+          animate={{
+            scale: [1, 1.05, 1],
+            boxShadow: [
+              '0 0 60px rgba(250, 204, 21, 0.6)',
+              '0 0 80px rgba(250, 204, 21, 0.8)',
+              '0 0 60px rgba(250, 204, 21, 0.6)',
+            ],
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        />
 
-            return (
-              <g key={ring.id}>
-                {/* Ring */}
-                <motion.circle
-                  cx={ring.x}
-                  cy={ring.y}
-                  r={ring.radius}
-                  fill="none"
-                  stroke={isReached ? '#facc15' : '#cbd5e1'}
-                  strokeWidth="4"
-                  initial={{ scale: 1, opacity: 0.6 }}
-                  animate={
-                    isReached
-                      ? { scale: [1, 1.2, 1], opacity: 1 }
-                      : { scale: 1, opacity: 0.6 }
-                  }
-                  transition={
-                    isReached
-                      ? { duration: 0.5 }
-                      : {}
-                  }
-                />
+        {/* Distant mountains */}
+        <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none">
+          <svg className="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
+            <path
+              d="M0,20 L0,15 L10,8 L20,14 L30,5 L40,12 L50,3 L60,10 L70,6 L80,12 L90,8 L100,14 L100,20 Z"
+              fill="#93c5fd"
+              opacity="0.5"
+            />
+          </svg>
+        </div>
 
-                {/* Ring number */}
-                <text
-                  x={ring.x}
-                  y={ring.y}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  fill={isReached ? '#facc15' : '#94a3b8'}
-                  fontSize="24"
-                  fontWeight="bold"
-                >
-                  {ring.id + 1}
-                </text>
-
-                {/* Checkmark for completed rings */}
-                {isReached && (
-                  <motion.g
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  >
-                    <circle cx={ring.x + 25} cy={ring.y - 25} r="15" fill="#22c55e" />
-                    <path
-                      d={`M ${ring.x + 18} ${ring.y - 25} L ${ring.x + 23} ${ring.y - 20} L ${ring.x + 32} ${ring.y - 30}`}
-                      stroke="white"
-                      strokeWidth="3"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </motion.g>
-                )}
-              </g>
-            );
-          })}
-
-          {/* Target (appears after all rings completed) */}
-          {ringsReached.size === 3 && (
-            <motion.g
+        {/* Clouds */}
+        <AnimatePresence>
+          {clouds.map((cloud) => (
+            <motion.button
+              key={cloud.id}
+              className={`absolute cursor-pointer ${cloud.matched ? 'pointer-events-none' : ''}`}
+              style={{
+                left: `${cloud.x}%`,
+                top: `${cloud.y}%`,
+                width: cloud.size,
+                height: cloud.size * 0.6,
+                transform: 'translate(-50%, -50%)',
+              }}
+              onClick={() => handleCloudClick(cloud.id)}
               initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
+              animate={{
+                scale: cloud.matched ? [1, 1.3, 0] : 1,
+                opacity: cloud.matched ? [1, 1, 0] : 1,
+                y: cloud.matched ? -50 : 0,
+              }}
+              transition={{
+                scale: { duration: cloud.matched ? 0.8 : 0.3 },
+                y: { duration: 0.8 },
+              }}
+              whileHover={!cloud.matched ? { scale: 1.1 } : {}}
+              whileTap={!cloud.matched ? { scale: 0.95 } : {}}
             >
-              <motion.circle
-                cx={target.x}
-                cy={target.y}
-                r={target.radius}
-                fill="rgba(250, 204, 21, 0.2)"
-                stroke="#facc15"
-                strokeWidth="4"
+              {/* Cloud shape */}
+              <motion.div
+                className="relative w-full h-full"
                 animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [0.5, 0.8, 0.5],
+                  y: [0, -3, 0, 3, 0],
                 }}
                 transition={{
-                  duration: 2,
+                  duration: 4 + Math.random() * 2,
                   repeat: Infinity,
                   ease: 'easeInOut',
                 }}
-              />
-              <text
-                x={target.x}
-                y={target.y}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fill="#facc15"
-                fontSize="28"
-                fontWeight="bold"
               >
-                TARGET
-              </text>
-            </motion.g>
-          )}
+                {/* Cloud body using multiple circles */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div
+                    className={`absolute rounded-full transition-colors duration-300 ${
+                      cloud.revealed || cloud.matched
+                        ? 'bg-gradient-to-br from-yellow-100 to-amber-200'
+                        : 'bg-gradient-to-br from-white to-gray-100'
+                    }`}
+                    style={{
+                      width: '70%',
+                      height: '100%',
+                      left: '15%',
+                      top: 0,
+                      boxShadow: cloud.revealed
+                        ? '0 4px 20px rgba(250, 204, 21, 0.4)'
+                        : '0 4px 15px rgba(0, 0, 0, 0.1)',
+                    }}
+                  />
+                  <div
+                    className={`absolute rounded-full transition-colors duration-300 ${
+                      cloud.revealed || cloud.matched
+                        ? 'bg-gradient-to-br from-yellow-50 to-amber-100'
+                        : 'bg-gradient-to-br from-white to-gray-50'
+                    }`}
+                    style={{
+                      width: '50%',
+                      height: '80%',
+                      left: 0,
+                      top: '10%',
+                    }}
+                  />
+                  <div
+                    className={`absolute rounded-full transition-colors duration-300 ${
+                      cloud.revealed || cloud.matched
+                        ? 'bg-gradient-to-br from-yellow-50 to-amber-100'
+                        : 'bg-gradient-to-br from-white to-gray-50'
+                    }`}
+                    style={{
+                      width: '45%',
+                      height: '70%',
+                      right: 0,
+                      top: '20%',
+                    }}
+                  />
+                </div>
 
-          {/* Floating Particle */}
-          <motion.g>
-            <motion.circle
-              cx={particlePos.x}
-              cy={particlePos.y}
-              r="12"
-              fill="#facc15"
-              animate={{
-                scale: [1, 1.1, 1],
+                {/* Symbol (visible when revealed) */}
+                <AnimatePresence>
+                  {(cloud.revealed || cloud.matched) && (
+                    <motion.div
+                      className="absolute inset-0 flex items-center justify-center"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <span
+                        className="text-3xl md:text-4xl drop-shadow-lg"
+                        style={{
+                          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+                        }}
+                      >
+                        {cloud.symbol}
+                      </span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Question mark when hidden */}
+                {!cloud.revealed && !cloud.matched && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-2xl text-gray-400 font-bold">?</span>
+                  </div>
+                )}
+
+                {/* Glow effect when revealed */}
+                {cloud.revealed && !cloud.matched && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    initial={{ boxShadow: '0 0 0 0 rgba(250, 204, 21, 0)' }}
+                    animate={{
+                      boxShadow: [
+                        '0 0 10px 5px rgba(250, 204, 21, 0.3)',
+                        '0 0 20px 10px rgba(250, 204, 21, 0.5)',
+                        '0 0 10px 5px rgba(250, 204, 21, 0.3)',
+                      ],
+                    }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                )}
+              </motion.div>
+
+              {/* Rainbow sparkle effect for matched clouds */}
+              {cloud.matched && (
+                <>
+                  {[...Array(8)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-3 h-3 rounded-full"
+                      style={{
+                        left: '50%',
+                        top: '50%',
+                        background: `hsl(${(i * 45) % 360}, 80%, 60%)`,
+                      }}
+                      initial={{ scale: 0, x: 0, y: 0, opacity: 1 }}
+                      animate={{
+                        scale: [0, 1.5, 0],
+                        x: Math.cos((i * Math.PI * 2) / 8) * 60,
+                        y: Math.sin((i * Math.PI * 2) / 8) * 60 - 30,
+                        opacity: [1, 1, 0],
+                      }}
+                      transition={{
+                        duration: 0.8,
+                        ease: 'easeOut',
+                      }}
+                    />
+                  ))}
+                </>
+              )}
+            </motion.button>
+          ))}
+        </AnimatePresence>
+
+        {/* Progress indicator */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-3">
+          {[0, 1, 2].map((i) => (
+            <motion.div
+              key={i}
+              className={`w-10 h-6 rounded-full flex items-center justify-center ${
+                i < matchedCount
+                  ? 'bg-gradient-to-br from-yellow-300 to-amber-400'
+                  : 'bg-white/60'
+              }`}
+              style={{
+                boxShadow: i < matchedCount
+                  ? '0 2px 10px rgba(250, 204, 21, 0.5)'
+                  : '0 2px 8px rgba(0, 0, 0, 0.1)',
               }}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
               transition={{
-                duration: 1,
-                repeat: Infinity,
-                ease: 'easeInOut',
+                type: 'spring',
+                stiffness: 260,
+                damping: 20,
+                delay: i * 0.1,
               }}
-            />
-
-            {/* Trail effect */}
-            {[...Array(3)].map((_, i) => (
-              <motion.circle
-                key={i}
-                cx={particlePos.x}
-                cy={particlePos.y}
-                r="12"
-                fill="#facc15"
-                initial={{ scale: 1, opacity: 0.5 }}
-                animate={{ scale: 2 + i, opacity: 0 }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  delay: i * 0.2,
-                  ease: 'easeOut',
-                }}
-              />
-            ))}
-          </motion.g>
-
-          {/* Cursor indicator */}
-          <motion.circle
-            cx={cursorPos.x}
-            cy={cursorPos.y}
-            r="8"
-            fill="none"
-            stroke="#94a3b8"
-            strokeWidth="2"
-            strokeDasharray="4 4"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-          />
-        </svg>
+            >
+              {i < matchedCount && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                  className="text-white text-sm"
+                >
+                  ✓
+                </motion.span>
+              )}
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* Helper text */}
       <p className="text-center mt-4 text-sm text-gray-500">
-        {ringsReached.size < 3
-          ? "Move your cursor to attract the wind particle - guide it through each waypoint"
-          : "Almost there! Guide the wind to the target to complete your mastery."}
+        {matchedCount < 3
+          ? "Click clouds to reveal their spirits, then find matching pairs"
+          : "The sky spirits are united! Like air, you soar freely."}
       </p>
     </div>
   );
