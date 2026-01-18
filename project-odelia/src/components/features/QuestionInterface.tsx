@@ -102,7 +102,7 @@ export default function QuestionInterface() {
             {/* Main Question */}
             <div className="text-center space-y-4">
               <motion.h1
-                className="text-4xl md:text-6xl font-display font-bold text-water-700 mb-2"
+                className="text-4xl md:text-6xl font-display font-bold text-red-500 mb-2"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
@@ -111,7 +111,7 @@ export default function QuestionInterface() {
               </motion.h1>
 
               <motion.p
-                className="text-3xl md:text-5xl font-calligraphy text-water-600 leading-relaxed"
+                className="text-3xl md:text-5xl font-calligraphy text-red-500 leading-relaxed"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
@@ -119,7 +119,7 @@ export default function QuestionInterface() {
                 Will you be my Valentine?
               </motion.p>
 
-              {/* Water droplet decoration */}
+              {/* Decorative circles */}
               <motion.div
                 className="flex justify-center gap-2 pt-4"
                 initial={{ opacity: 0 }}
@@ -129,7 +129,7 @@ export default function QuestionInterface() {
                 {[...Array(3)].map((_, i) => (
                   <motion.div
                     key={i}
-                    className="w-2 h-2 bg-water-400 rounded-full"
+                    className="w-2 h-2 bg-red-400 rounded-full"
                     animate={{
                       y: [0, -8, 0],
                       opacity: [0.5, 1, 0.5],
