@@ -73,38 +73,6 @@ export default function QuestionInterface() {
     }
   }, [dodgeCount, startTime]);
 
-  const handleNoClick = useCallback(async () => {
-    // This is mainly a fallback if someone manages to click it
-    if (state !== 'idle') return;
-
-    setState('selected');
-    setAnswer('no');
-
-    // Send response to API
-    try {
-      const timeToDecide = Date.now() - startTime;
-      await fetch('/api/response', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          answer: 'no',
-          metadata: {
-            dodgeCount,
-            timeToDecide,
-          },
-        }),
-      });
-    } catch (error) {
-      console.error('Failed to save response:', error);
-    }
-
-    // Show a gentle message
-    alert('💔 The elements are out of balance... The Moon weeps, the Dragons dim their flame, the Badgermoles retreat into stone, and the Sky Bison fly away. Perhaps you will reconsider bringing harmony back?');
-    setState('idle');
-    setAnswer(null);
-  }, [state, dodgeCount, startTime]);
 
   return (
     <div className="relative">
@@ -189,7 +157,7 @@ export default function QuestionInterface() {
                 disabled={state !== 'idle'}
                 element="all"
               />
-              <DodgyButton onClick={handleNoClick} disabled={state !== 'idle'} />
+              <DodgyButton disabled={state !== 'idle'} />
             </motion.div>
           </motion.div>
         ) : null}

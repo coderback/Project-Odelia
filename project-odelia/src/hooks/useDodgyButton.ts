@@ -18,9 +18,6 @@ export function useDodgyButton({
 }: UseDodgyButtonOptions = {}) {
   const [position, setPosition] = useState<Position>(initialPosition);
   const [dodgeCount, setDodgeCount] = useState(0);
-  const [rotation, setRotation] = useState(0);
-  const [scale, setScale] = useState(1);
-  const [opacity, setOpacity] = useState(1);
   const [isPositioned, setIsPositioned] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const bodyRef = useRef(typeof document !== 'undefined' ? document.body : null);
@@ -55,19 +52,7 @@ export function useDodgyButton({
 
     setPosition({ x: newX, y: newY });
     setDodgeCount((prev) => prev + 1);
-
-    // Add rotation wobble
-    setRotation((prev) => prev + (Math.random() > 0.5 ? 15 : -15));
-
-    // Progressive difficulty: shrink and fade after multiple dodges
-    const newCount = dodgeCount + 1;
-    if (newCount >= 5) {
-      setScale(Math.max(0.5, 1 - newCount * 0.05));
-    }
-    if (newCount >= 7) {
-      setOpacity(Math.max(0.3, 1 - newCount * 0.08));
-    }
-  }, [dodgeCount]);
+  }, []);
 
   // Track mouse proximity and update position (desktop only)
   useEffect(() => {
@@ -118,18 +103,6 @@ export function useDodgyButton({
       // Update dodge count
       setDodgeCount((prev) => prev + 1);
 
-      // Add rotation wobble
-      setRotation((prev) => prev + (Math.random() > 0.5 ? 15 : -15));
-
-      // Progressive difficulty: shrink and fade after multiple dodges
-      const newCount = dodgeCount + 1;
-      if (newCount >= 5) {
-        setScale(Math.max(0.5, 1 - newCount * 0.05));
-      }
-      if (newCount >= 7) {
-        setOpacity(Math.max(0.3, 1 - newCount * 0.08));
-      }
-
       // Reset dodging flag after animation
       setTimeout(() => {
         isDodging.current = false;
@@ -139,18 +112,12 @@ export function useDodgyButton({
 
   const resetButton = useCallback(() => {
     setDodgeCount(0);
-    setRotation(0);
-    setScale(1);
-    setOpacity(1);
   }, []);
 
   return {
     buttonRef,
     position,
     dodgeCount,
-    rotation,
-    scale,
-    opacity,
     isPositioned,
     moveToRandomPosition,
     resetButton,

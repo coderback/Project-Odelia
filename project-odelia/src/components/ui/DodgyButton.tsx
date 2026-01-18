@@ -4,18 +4,14 @@ import { motion } from 'framer-motion';
 import { useDodgyButton } from '@/hooks/useDodgyButton';
 
 interface DodgyButtonProps {
-  onClick: () => void;
   disabled?: boolean;
 }
 
-export default function DodgyButton({ onClick, disabled = false }: DodgyButtonProps) {
+export default function DodgyButton({ disabled = false }: DodgyButtonProps) {
   const {
     buttonRef,
     position,
     dodgeCount,
-    rotation,
-    scale,
-    opacity,
     isPositioned,
     moveToRandomPosition
   } = useDodgyButton({
@@ -23,26 +19,24 @@ export default function DodgyButton({ onClick, disabled = false }: DodgyButtonPr
     escapeDistance: 150,
   });
 
-  // Handle touch/click - move button away on mobile before click registers
+  // Handle touch - move button away on mobile
   const handleTouchStart = (e: React.TouchEvent) => {
-    e.preventDefault(); // Prevent click from firing immediately
+    e.preventDefault();
     moveToRandomPosition();
-
-    // After moving, if they still manage to tap it, let the click through
-    setTimeout(() => {
-      if (dodgeCount >= 10) {
-        onClick();
-      }
-    }, 300);
   };
 
   // Switch to fixed positioning after first dodge
   const shouldBeFixed = isPositioned && dodgeCount > 0;
 
+  // Handle click - just move to random position
+  const handleClick = () => {
+    moveToRandomPosition();
+  };
+
   return (
     <motion.button
       ref={buttonRef}
-      onClick={onClick}
+      onClick={handleClick}
       onTouchStart={handleTouchStart}
       disabled={disabled}
       className={`
@@ -70,13 +64,6 @@ export default function DodgyButton({ onClick, disabled = false }: DodgyButtonPr
         left: position.x,
         top: position.y,
       } : undefined}
-      animate={{
-        x: 0,
-        y: 0,
-        rotate: rotation,
-        scale: scale,
-        opacity: opacity,
-      }}
       transition={{
         type: 'spring',
         stiffness: 300,
@@ -84,16 +71,6 @@ export default function DodgyButton({ onClick, disabled = false }: DodgyButtonPr
       }}
       aria-label="Click to say NO (if you dare)"
     >
-      {/* Dodge effect */}
-      {dodgeCount > 0 && dodgeCount < 10 && (
-        <motion.div
-          className="absolute inset-0 rounded-xl bg-gray-400/30"
-          initial={{ scale: 1, opacity: 0.5 }}
-          animate={{ scale: 2, opacity: 0 }}
-          transition={{ duration: 0.5 }}
-        />
-      )}
-
       {/* Button text */}
       <span className="relative z-10">
         NO

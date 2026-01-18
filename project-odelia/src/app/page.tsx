@@ -10,7 +10,7 @@ import ElementMastery from '@/components/features/ElementMastery';
 import BackgroundMusic from '@/components/ui/BackgroundMusic';
 import { ElementType } from '@/lib/elements';
 
-type ViewState = 'hub' | 'mastery' | 'question';
+type ViewState = 'hub' | 'mastery' | 'transition' | 'question';
 
 export default function Home() {
   const [view, setView] = useState<ViewState>('hub');
@@ -31,10 +31,14 @@ export default function Home() {
   };
 
   const handleAllMastered = () => {
-    // Delay transition for dramatic effect
+    // Show transition screen first
     setTimeout(() => {
-      setView('question');
+      setView('transition');
     }, 800);
+  };
+
+  const handleTransitionComplete = () => {
+    setView('question');
   };
 
   return (
@@ -85,6 +89,72 @@ export default function Home() {
                 onComplete={handleMasteryComplete}
                 onBack={() => setView('hub')}
               />
+            </motion.div>
+          )}
+
+          {view === 'transition' && (
+            <motion.div
+              key="transition"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="py-16 md:py-24"
+            >
+              <div className="text-center space-y-8">
+                {/* Decorative element symbols */}
+                <motion.div
+                  className="flex justify-center gap-4"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
+                >
+                  {['💧', '🔥', '🪨', '🌀'].map((emoji, i) => (
+                    <motion.span
+                      key={i}
+                      className="text-3xl md:text-4xl"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.5 + i * 0.15, type: 'spring', stiffness: 200 }}
+                    >
+                      {emoji}
+                    </motion.span>
+                  ))}
+                </motion.div>
+
+                {/* Main text */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.2, duration: 0.8 }}
+                  className="space-y-4"
+                >
+                  <h2 className="text-3xl md:text-5xl font-display font-bold text-gray-800">
+                    Now, a Question for you
+                  </h2>
+                  <motion.p
+                    className="text-4xl md:text-6xl font-calligraphy text-gray-800"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.8, duration: 0.6 }}
+                  >
+                    Odelia...
+                  </motion.p>
+                </motion.div>
+
+                {/* Continue button */}
+                <motion.button
+                  onClick={handleTransitionComplete}
+                  className="mt-8 px-8 py-4 bg-gray-800 text-white font-bold text-xl rounded-lg shadow-lg"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 2.5, duration: 0.5 }}
+                  whileHover={{ scale: 1.05, boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Continue
+                </motion.button>
+              </div>
             </motion.div>
           )}
 

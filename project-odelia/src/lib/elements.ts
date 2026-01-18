@@ -43,14 +43,13 @@ export const ELEMENTS: Record<Exclude<ElementType, 'all'>, ElementConfig> = {
     },
     gradient: 'water-gradient',
     lore: [
-      "In the spirit oasis of the Northern Water Tribe,",
-      "two spirits dance in eternal harmony...",
+      "Water is the element of change.",
       "",
-      "Tui and La, the Moon and Ocean,",
-      "push and pull in perfect balance.",
+      "The people of the Water Tribes",
+      "are capable of adapting to many things.",
       "",
-      "They represent the flow of life—",
-      "adaptable, persistent, healing."
+      "They have a sense of community and love",
+      "that holds them together through anything."
     ],
     riddle: {
       question: "What virtue does water teach us above all?",
@@ -110,15 +109,13 @@ export const ELEMENTS: Record<Exclude<ElementType, 'all'>, ElementConfig> = {
     },
     gradient: 'fire-gradient',
     lore: [
-      "In the heart of the Fire Nation,",
-      "Ran and Shaw, the ancient dragon masters,",
-      "guard the sacred flame of life...",
+      "Fire is the element of power.",
       "",
-      "Fire is not just destruction,",
-      "but passion, determination, and light.",
+      "The people of the Fire Nation",
+      "have desire and will,",
       "",
-      "It burns away the old to make way for the new,",
-      "and illuminates the path forward in darkness."
+      "and the energy and drive",
+      "to achieve what they want."
     ],
     riddle: {
       question: "What gift does fire offer to those brave enough to embrace it?",
@@ -178,15 +175,12 @@ export const ELEMENTS: Record<Exclude<ElementType, 'all'>, ElementConfig> = {
     },
     gradient: 'earth-gradient',
     lore: [
-      "In the vast reaches of the Earth Kingdom,",
-      "Badgermoles carved the first cities,",
-      "teaching humanity to stand firm...",
+      "Earth is the element of substance.",
       "",
-      "Earth endures through all seasons,",
-      "steadfast, reliable, nurturing growth.",
+      "The people of the Earth Kingdom",
+      "are diverse and strong.",
       "",
-      "It represents the foundation upon which",
-      "all lasting things are built."
+      "They are persistent and enduring."
     ],
     riddle: {
       question: "What strength does earth provide that all else depends upon?",
@@ -246,13 +240,14 @@ export const ELEMENTS: Record<Exclude<ElementType, 'all'>, ElementConfig> = {
     },
     gradient: 'air-gradient',
     lore: [
-      "The Air Nomads lived in perfect freedom,",
-      "guided by Sky Bison through endless skies...",
+      "Air is the element of freedom.",
       "",
-      "Air is everywhere and nowhere,",
-      "bringing freedom, joy, and boundless possibility.",
+      "The Air Nomads detached themselves",
+      "from worldly concerns",
+      "and found peace and freedom.",
       "",
-      "Now, Odelia, a question for you..."
+      "Also, they apparently had",
+      "pretty good senses of humor."
     ],
     riddle: {
       question: "", // Air stage is the transition, no riddle
