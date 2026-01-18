@@ -84,10 +84,10 @@ export default function DodgyButton({ onClick, disabled = false }: DodgyButtonPr
       }}
       aria-label="Click to say NO (if you dare)"
     >
-      {/* Water splash effect when dodging */}
+      {/* Dodge effect */}
       {dodgeCount > 0 && dodgeCount < 10 && (
         <motion.div
-          className="absolute inset-0 rounded-xl bg-water-400/30"
+          className="absolute inset-0 rounded-xl bg-gray-400/30"
           initial={{ scale: 1, opacity: 0.5 }}
           animate={{ scale: 2, opacity: 0 }}
           transition={{ duration: 0.5 }}
@@ -96,7 +96,7 @@ export default function DodgyButton({ onClick, disabled = false }: DodgyButtonPr
 
       {/* Button text */}
       <span className="relative z-10">
-        NO {dodgeCount >= 5 && '💧'}
+        NO
       </span>
 
       {/* Tooltip after multiple dodges */}
@@ -107,22 +107,22 @@ export default function DodgyButton({ onClick, disabled = false }: DodgyButtonPr
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          {dodgeCount < 5 && "The water evades... 💧"}
-          {dodgeCount >= 5 && dodgeCount < 7 && "Like mist, I slip away... 🌊"}
-          {dodgeCount >= 7 && "Maybe reconsider? 💙"}
+          {dodgeCount < 5 && "Nope!"}
+          {dodgeCount >= 5 && dodgeCount < 7 && "Can't catch me!"}
+          {dodgeCount >= 7 && "Maybe reconsider?"}
         </motion.div>
       )}
 
       {/* Mobile hint after first dodge */}
       {dodgeCount === 1 && (
         <motion.div
-          className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-water-600 text-white text-xs px-3 py-1 rounded-lg whitespace-nowrap pointer-events-none z-50 md:hidden"
+          className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-gray-600 text-white text-xs px-3 py-1 rounded-lg whitespace-nowrap pointer-events-none z-50 md:hidden"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          Try to catch me! 💧
+          Try to catch me!
         </motion.div>
       )}
     </motion.button>
