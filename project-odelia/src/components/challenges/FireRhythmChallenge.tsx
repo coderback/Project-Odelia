@@ -134,7 +134,7 @@ export default function FireRhythmChallenge({ onSuccess }: FireRhythmChallengePr
           Dragon Dance Sequence
         </h3>
         <p className="text-sm md:text-lg text-gray-600">
-          Learn the ancient dragon dance, passed down through generations
+          Learn the ancient dragon dance, passed down through generations since the era of Raava
         </p>
         <div className="mt-2 flex items-center justify-center gap-4">
           <span className="text-lg md:text-xl font-bold text-fire-500">

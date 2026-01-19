@@ -22,10 +22,13 @@ const cinzel = Cinzel({
 });
 
 export const metadata: Metadata = {
-  title: "Will You Be My Valentine? | Odelia",
+  title: "Project Odelia",
   description: "A special Valentine's message inspired by water's eternal flow and harmony",
   keywords: ["valentine", "love", "romance", "water", "harmony"],
   authors: [{ name: "Your Secret Admirer" }],
+  icons: {
+    icon: "/images/avatar_symbol.png",
+  },
   openGraph: {
     title: "Will You Be My Valentine?",
     description: "Like water finds its way, my love flows to you",

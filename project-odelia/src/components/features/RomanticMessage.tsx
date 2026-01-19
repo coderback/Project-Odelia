@@ -11,71 +11,52 @@ export default function RomanticMessage() {
       animate="visible"
       className="text-center space-y-6"
     >
-      {/* Main romantic message - All Four Elements */}
+      {/* Main romantic message - Tui and La */}
       <div className="space-y-4">
         <motion.p
-          className="text-xl md:text-2xl font-calligraphy text-water-700 leading-relaxed"
+          className="text-xl md:text-2xl font-calligraphy text-gray-700 leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.8 }}
         >
-          Like the Moon and Ocean spirits, our love flows in eternal harmony,
+          Tui and La, the Moon and Ocean,
           <br />
-          adaptable and persistent, healing all it touches...
+          have always circled each other in an eternal dance.
         </motion.p>
 
         <motion.p
-          className="text-xl md:text-2xl font-calligraphy text-fire-700 leading-relaxed"
+          className="text-xl md:text-2xl font-calligraphy text-gray-700 leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
         >
-          Like the dragons Ran and Shaw, our passion burns bright,
+          They balance each other.
           <br />
-          illuminating the path forward and transforming us both...
-        </motion.p>
-
-        <motion.p
-          className="text-xl md:text-2xl font-calligraphy text-earth-700 leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.8 }}
-        >
-          Like the ancient Badgermoles, our bond stands firm and unwavering,
+          Push and Pull. Life and Death.
           <br />
-          a foundation upon which all lasting things are built...
-        </motion.p>
-
-        <motion.p
-          className="text-xl md:text-2xl font-calligraphy text-air-700 leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-        >
-          Like the Sky Bison soaring through endless skies,
-          <br />
-          our love lifts us to boundless heights of joy and freedom...
-        </motion.p>
-
-        <motion.p
-          className="text-2xl md:text-3xl font-display bg-gradient-to-r from-water-400 via-fire-400 via-jade-400 to-air-400 bg-clip-text text-transparent font-bold pt-6"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
-        >
-          Together, Odelia, we bring balance to this world.
+          Good and Evil. Yin and Yang.
         </motion.p>
       </div>
+
+      {/* Balance message */}
+      <motion.p
+        className="text-xl md:text-2xl font-calligraphy text-gray-700 leading-relaxed pt-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.4, duration: 0.8 }}
+      >
+        Just like them, we can learn to find balance.
+      </motion.p>
 
       {/* Valentine's message */}
       <motion.div
         className="pt-6"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.8, duration: 0.6 }}
+        transition={{ delay: 2.0, duration: 0.6 }}
       >
-        <p className="text-2xl md:text-3xl font-display font-bold bg-gradient-to-r from-romantic-pink to-romantic-gold bg-clip-text text-transparent">
-          Happy Valentine's Day, Odelia ❤️
+        <p className="text-2xl md:text-3xl font-display font-bold text-red-500">
+          Happy Valentine's Day, Odelia
         </p>
       </motion.div>
 
@@ -84,7 +65,7 @@ export default function RomanticMessage() {
         className="flex justify-center items-center gap-6 pt-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.1, duration: 0.8 }}
+        transition={{ delay: 2.4, duration: 0.8 }}
       >
         {/* Water symbol */}
         <motion.img

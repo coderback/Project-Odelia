@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveResponse } from '@/lib/db';
+import { sendYesNotification } from '@/lib/email';
 import { ResponseData, ApiResponse } from '@/types';
 
 export async function POST(request: NextRequest) {
@@ -23,6 +24,11 @@ export async function POST(request: NextRequest) {
       body.sessionId,
       body.metadata
     );
+
+    // Send email notification if she said YES!
+    if (body.answer === 'yes') {
+      await sendYesNotification();
+    }
 
     return NextResponse.json(
       {
