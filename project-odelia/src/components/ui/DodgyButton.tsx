@@ -5,9 +5,10 @@ import { useDodgyButton } from '@/hooks/useDodgyButton';
 
 interface DodgyButtonProps {
   disabled?: boolean;
+  onDodge?: (count: number) => void;
 }
 
-export default function DodgyButton({ disabled = false }: DodgyButtonProps) {
+export default function DodgyButton({ disabled = false, onDodge }: DodgyButtonProps) {
   const {
     buttonRef,
     position,
@@ -23,6 +24,7 @@ export default function DodgyButton({ disabled = false }: DodgyButtonProps) {
   const handleTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
     moveToRandomPosition();
+    onDodge?.(dodgeCount + 1);
   };
 
   // Switch to fixed positioning after first dodge
@@ -31,6 +33,7 @@ export default function DodgyButton({ disabled = false }: DodgyButtonProps) {
   // Handle click - just move to random position
   const handleClick = () => {
     moveToRandomPosition();
+    onDodge?.(dodgeCount + 1);
   };
 
   return (

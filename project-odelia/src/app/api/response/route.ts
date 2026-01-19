@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     // Send email notification if she said YES!
     if (body.answer === 'yes') {
-      await sendYesNotification();
+      await sendYesNotification(body.metadata?.dodgeCount || 0);
     }
 
     return NextResponse.json(

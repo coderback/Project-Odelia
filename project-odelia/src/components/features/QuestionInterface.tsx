@@ -157,7 +157,7 @@ export default function QuestionInterface() {
                 disabled={state !== 'idle'}
                 element="all"
               />
-              <DodgyButton disabled={state !== 'idle'} />
+              <DodgyButton disabled={state !== 'idle'} onDodge={setDodgeCount} />
             </motion.div>
           </motion.div>
         ) : null}
