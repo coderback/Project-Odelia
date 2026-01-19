@@ -116,7 +116,7 @@ export default function QuestionInterface() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
               >
-                Will you be my Valentine?
+                May I be your Valentine?
               </motion.p>
 
               {/* Decorative circles */}

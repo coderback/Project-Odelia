@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     icon: "/images/avatar_symbol.png",
   },
   openGraph: {
-    title: "Will You Be My Valentine?",
+    title: "Project Odelia",
     description: "Like water finds its way, my love flows to you",
     type: "website",
   },
