@@ -46,9 +46,31 @@ export function useDodgyButton({
     const maxX = window.innerWidth - rect.width - padding;
     const maxY = window.innerHeight - rect.height - padding;
 
-    // Generate random position
-    const newX = Math.random() * (maxX - padding) + padding;
-    const newY = Math.random() * (maxY - padding) + padding;
+    // Find the Yes button to avoid overlapping with it
+    const yesButton = document.querySelector('[aria-label="Click to say YES to being my Valentine"]');
+    const yesRect = yesButton?.getBoundingClientRect();
+
+    // Helper to check if position overlaps with Yes button
+    const overlapsYesButton = (x: number, y: number) => {
+      if (!yesRect) return false;
+      const buffer = 20; // Extra buffer space
+      return !(
+        x + rect.width + buffer < yesRect.left ||
+        x > yesRect.right + buffer ||
+        y + rect.height + buffer < yesRect.top ||
+        y > yesRect.bottom + buffer
+      );
+    };
+
+    // Try to find a non-overlapping position (max 10 attempts)
+    let newX = 0;
+    let newY = 0;
+    let attempts = 0;
+    do {
+      newX = Math.random() * (maxX - padding) + padding;
+      newY = Math.random() * (maxY - padding) + padding;
+      attempts++;
+    } while (overlapsYesButton(newX, newY) && attempts < 10);
 
     setPosition({ x: newX, y: newY });
     setDodgeCount((prev) => prev + 1);
@@ -80,6 +102,22 @@ export function useDodgyButton({
       isDodging.current = true;
       lastDodgeTime.current = now;
 
+      // Find the Yes button to avoid overlapping with it
+      const yesButton = document.querySelector('[aria-label="Click to say YES to being my Valentine"]');
+      const yesRect = yesButton?.getBoundingClientRect();
+
+      // Helper to check if position overlaps with Yes button
+      const overlapsYesButton = (x: number, y: number) => {
+        if (!yesRect) return false;
+        const buffer = 20;
+        return !(
+          x + rect.width + buffer < yesRect.left ||
+          x > yesRect.right + buffer ||
+          y + rect.height + buffer < yesRect.top ||
+          y > yesRect.bottom + buffer
+        );
+      };
+
       // Calculate new position
       const escapeVector = calculateEscapeVector(
         docX,
@@ -90,12 +128,27 @@ export function useDodgyButton({
       );
 
       // Constrain to viewport
-      const constrainedPosition = constrainToViewport(
+      let constrainedPosition = constrainToViewport(
         escapeVector.x - rect.width / 2,
         escapeVector.y - rect.height / 2,
         rect.width,
         rect.height
       );
+
+      // If overlapping Yes button, try random position instead
+      if (overlapsYesButton(constrainedPosition.x, constrainedPosition.y)) {
+        const padding = 20;
+        const maxX = window.innerWidth - rect.width - padding;
+        const maxY = window.innerHeight - rect.height - padding;
+        let attempts = 0;
+        do {
+          constrainedPosition = {
+            x: Math.random() * (maxX - padding) + padding,
+            y: Math.random() * (maxY - padding) + padding,
+          };
+          attempts++;
+        } while (overlapsYesButton(constrainedPosition.x, constrainedPosition.y) && attempts < 10);
+      }
 
       // Update position
       setPosition(constrainedPosition);
