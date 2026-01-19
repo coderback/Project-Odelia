@@ -150,12 +150,12 @@ export default function FireRhythmChallenge({ onSuccess }: FireRhythmChallengePr
       </div>
 
       {/* Game Canvas */}
-      <div className="relative bg-gradient-to-br from-fire-50 to-orange-50 rounded-lg p-4 md:p-8 shadow-inner">
-        <div className="relative mx-auto" style={{ width: '320px', height: '320px' }}>
+      <div className="relative bg-gradient-to-br from-fire-50 to-orange-50 rounded-lg p-4 md:p-8 shadow-inner overflow-hidden">
+        <div className="relative mx-auto w-[260px] h-[260px] md:w-[320px] md:h-[320px]">
           {/* Center Dragon Symbol */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <motion.div
-              className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-fire-500 to-red-600 flex items-center justify-center shadow-lg"
+              className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-fire-500 to-red-600 flex items-center justify-center shadow-lg"
               animate={
                 phase === 'watching'
                   ? {
@@ -176,7 +176,7 @@ export default function FireRhythmChallenge({ onSuccess }: FireRhythmChallengePr
             >
               {/* Dragon icon representation */}
               <motion.span
-                className="text-5xl md:text-6xl"
+                className="text-4xl md:text-6xl"
                 animate={{
                   rotate: phase === 'watching' ? [0, 5, -5, 0] : 0,
                 }}
@@ -189,20 +189,28 @@ export default function FireRhythmChallenge({ onSuccess }: FireRhythmChallengePr
 
           {/* 4 Flame Orbs */}
           {orbs.map((orb) => {
-            const radius = 120;
+            // Responsive radius and center
+            const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+            const radius = 90; // Mobile radius
+            const mdRadius = 120; // Desktop radius
+            const center = 130; // Mobile center
+            const mdCenter = 160; // Desktop center
+            const orbSize = 28; // Half of orb width for centering
+
             const angleRad = (orb.angle * Math.PI) / 180;
-            const x = 160 + Math.cos(angleRad) * radius - 36;
-            const y = 160 + Math.sin(angleRad) * radius - 36;
             const isActive = activeOrb === orb.id;
             const isClickable = phase === 'playing';
 
             return (
               <motion.button
                 key={orb.id}
-                className={`absolute w-[72px] h-[72px] rounded-full flex items-center justify-center transition-colors ${
+                className={`absolute w-[56px] h-[56px] md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center transition-colors ${
                   isClickable ? 'cursor-pointer' : 'cursor-default'
                 }`}
-                style={{ left: x, top: y }}
+                style={{
+                  left: `calc(50% + ${Math.cos(angleRad) * radius}px - 28px)`,
+                  top: `calc(50% + ${Math.sin(angleRad) * radius}px - 28px)`,
+                }}
                 onClick={() => handleOrbClick(orb.id)}
                 disabled={!isClickable}
                 initial={{ scale: 0, opacity: 0 }}
@@ -238,7 +246,7 @@ export default function FireRhythmChallenge({ onSuccess }: FireRhythmChallengePr
 
                 {/* Flame emoji */}
                 <motion.span
-                  className="relative z-10 text-3xl"
+                  className="relative z-10 text-2xl md:text-3xl"
                   animate={
                     isActive
                       ? { scale: [1, 1.3, 1], y: [-2, -8, -2] }
