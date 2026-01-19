@@ -1,0 +1,49 @@
+import nodemailer from 'nodemailer';
+
+// Create transporter using environment variables
+const transporter = nodemailer.createTransport({
+  service: process.env.EMAIL_SERVICE || 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+export async function sendYesNotification() {
+  // Skip if email not configured
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || !process.env.NOTIFY_EMAIL) {
+    console.log('Email not configured, skipping notification');
+    return false;
+  }
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.NOTIFY_EMAIL,
+    subject: 'She said YES!',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; text-align: center;">
+        <h1 style="color: #ef4444; font-size: 48px; margin-bottom: 20px;">
+          She said YES!
+        </h1>
+        <p style="font-size: 24px; color: #374151; margin-bottom: 30px;">
+          Odelia clicked YES to be your Valentine!
+        </p>
+        <div style="font-size: 60px; margin: 30px 0;">
+          ❤️
+        </div>
+        <p style="font-size: 16px; color: #6b7280;">
+          ${new Date().toLocaleString()}
+        </p>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Notification email sent successfully!');
+    return true;
+  } catch (error) {
+    console.error('Failed to send notification email:', error);
+    return false;
+  }
+}
