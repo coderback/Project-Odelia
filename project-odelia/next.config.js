@@ -6,6 +6,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  serverExternalPackages: ['better-sqlite3'],
 };
 
 module.exports = nextConfig;

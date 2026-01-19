@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Save to database
+    // Save to database (will gracefully handle if DB not available)
     const result = saveResponse(
       body.answer,
       body.sessionId,
@@ -34,16 +34,16 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         responseId: result.id,
-        message: `Response "${body.answer}" saved successfully!`,
+        message: `Response "${body.answer}" processed successfully!`,
       } as ApiResponse,
       { status: 200 }
     );
   } catch (error) {
-    console.error('Error saving response:', error);
+    console.error('Error processing response:', error);
     return NextResponse.json(
       {
         success: false,
-        message: 'Failed to save response. Please try again.',
+        message: 'Failed to process response. Please try again.',
       } as ApiResponse,
       { status: 500 }
     );

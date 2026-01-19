@@ -1,49 +1,74 @@
-import Database from 'better-sqlite3';
-import path from 'path';
 import { Answer } from '@/types';
 
-// Create database instance
-const dbPath = path.join(process.cwd(), 'responses.db');
-const db = new Database(dbPath);
+// Check if we're in a serverless environment (Vercel)
+const isServerless = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME;
 
-// Initialize database schema
-db.exec(`
-  CREATE TABLE IF NOT EXISTS responses (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    answer TEXT NOT NULL CHECK(answer IN ('yes', 'no')),
-    timestamp TEXT NOT NULL,
-    session_id TEXT,
-    metadata TEXT
-  )
-`);
+// Database is disabled in serverless environments
+let db: any = null;
+let insertResponse: any = null;
+let getAllResponses: any = null;
+let getStats: any = null;
 
-// Prepared statements for better performance
-const insertResponse = db.prepare(`
-  INSERT INTO responses (answer, timestamp, session_id, metadata)
-  VALUES (?, ?, ?, ?)
-`);
+// Only initialize database in non-serverless environments
+if (!isServerless) {
+  try {
+    const Database = require('better-sqlite3');
+    const path = require('path');
 
-const getAllResponses = db.prepare(`
-  SELECT * FROM responses ORDER BY timestamp DESC
-`);
+    const dbPath = path.join(process.cwd(), 'responses.db');
+    db = new Database(dbPath);
 
-const getStats = db.prepare(`
-  SELECT
-    COUNT(*) as totalResponses,
-    SUM(CASE WHEN answer = 'yes' THEN 1 ELSE 0 END) as yesCount,
-    SUM(CASE WHEN answer = 'no' THEN 1 ELSE 0 END) as noCount
-  FROM responses
-`);
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS responses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        answer TEXT NOT NULL CHECK(answer IN ('yes', 'no')),
+        timestamp TEXT NOT NULL,
+        session_id TEXT,
+        metadata TEXT
+      )
+    `);
 
-// Database operations
+    insertResponse = db.prepare(`
+      INSERT INTO responses (answer, timestamp, session_id, metadata)
+      VALUES (?, ?, ?, ?)
+    `);
+
+    getAllResponses = db.prepare(`
+      SELECT * FROM responses ORDER BY timestamp DESC
+    `);
+
+    getStats = db.prepare(`
+      SELECT
+        COUNT(*) as totalResponses,
+        SUM(CASE WHEN answer = 'yes' THEN 1 ELSE 0 END) as yesCount,
+        SUM(CASE WHEN answer = 'no' THEN 1 ELSE 0 END) as noCount
+      FROM responses
+    `);
+
+    process.on('exit', () => {
+      if (db) db.close();
+    });
+
+    console.log('Database initialized successfully');
+  } catch (error) {
+    console.log('Database initialization failed, continuing without DB');
+  }
+} else {
+  console.log('Serverless environment detected, skipping database');
+}
+
 export function saveResponse(
   answer: Answer,
   sessionId?: string,
   metadata?: { dodgeCount?: number; timeToDecide?: number }
 ) {
   const timestamp = new Date().toISOString();
-  const metadataJson = metadata ? JSON.stringify(metadata) : null;
 
+  if (!insertResponse) {
+    return { id: 0, answer, timestamp, sessionId, metadata };
+  }
+
+  const metadataJson = metadata ? JSON.stringify(metadata) : null;
   const result = insertResponse.run(answer, timestamp, sessionId || null, metadataJson);
 
   return {
@@ -56,6 +81,16 @@ export function saveResponse(
 }
 
 export function getResponseStats() {
+  if (!getStats) {
+    return {
+      totalResponses: 0,
+      yesCount: 0,
+      noCount: 0,
+      yesPercentage: 0,
+      lastUpdated: new Date().toISOString(),
+    };
+  }
+
   const stats = getStats.get() as {
     totalResponses: number;
     yesCount: number;
@@ -75,12 +110,10 @@ export function getResponseStats() {
 }
 
 export function getAllResponsesList() {
+  if (!getAllResponses) {
+    return [];
+  }
   return getAllResponses.all();
 }
-
-// Close database on process exit
-process.on('exit', () => {
-  db.close();
-});
 
 export default db;
