@@ -73,7 +73,7 @@ export default function ChapterCard({ chapter, status, index }: ChapterCardProps
         ${colors.bg}
         rounded-xl
         shadow-parchment
-        p-6
+        p-4 sm:p-6
         w-full
         max-w-md
         parchment-texture
@@ -81,23 +81,24 @@ export default function ChapterCard({ chapter, status, index }: ChapterCardProps
         ${colors.border}
         transition-all
         duration-300
-        ${isClickable ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}
+        ${isClickable ? 'cursor-pointer active:scale-[0.98]' : 'cursor-not-allowed opacity-60'}
       `}
     >
       {/* Status Badge */}
-      <div className={`absolute -top-3 right-4 px-3 py-1 rounded-full text-xs font-medium ${colors.badge}`}>
+      <div className={`absolute -top-2.5 sm:-top-3 right-3 sm:right-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium ${colors.badge}`}>
         {status === 'completed' && '✓ Completed'}
         {status === 'available' && '★ Available'}
         {status === 'locked' && '🔒 Locked'}
       </div>
 
       {/* Chapter Icon */}
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-3 sm:gap-4">
         <div className={`
-          w-14 h-14
+          w-11 h-11 sm:w-14 sm:h-14
           rounded-full
           flex items-center justify-center
-          text-2xl
+          text-xl sm:text-2xl
+          flex-shrink-0
           ${status === 'locked' ? 'bg-parchment-300' : 'bg-white'}
           shadow-md
           border-2
@@ -107,11 +108,11 @@ export default function ChapterCard({ chapter, status, index }: ChapterCardProps
         </div>
 
         {/* Chapter Info */}
-        <div className="flex-1">
-          <h3 className={`text-xl font-display ${colors.text} mb-1`}>
+        <div className="flex-1 min-w-0 pr-6 sm:pr-8">
+          <h3 className={`text-base sm:text-xl font-display ${colors.text} mb-0.5 sm:mb-1 truncate`}>
             {chapter.title}
           </h3>
-          <p className={`text-sm ${status === 'locked' ? 'text-parchment-500' : 'text-parchment-600'}`}>
+          <p className={`text-xs sm:text-sm leading-snug ${status === 'locked' ? 'text-parchment-500' : 'text-parchment-600'}`}>
             {chapter.description}
           </p>
         </div>
@@ -120,11 +121,11 @@ export default function ChapterCard({ chapter, status, index }: ChapterCardProps
       {/* Arrow indicator for available chapters */}
       {isClickable && (
         <motion.div
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 mt-2"
+          className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 mt-1 sm:mt-2"
           animate={{ x: [0, 5, 0] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
         >
-          <span className={`text-xl ${colors.text}`}>→</span>
+          <span className={`text-lg sm:text-xl ${colors.text}`}>→</span>
         </motion.div>
       )}
     </motion.div>

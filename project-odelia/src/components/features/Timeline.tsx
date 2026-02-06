@@ -54,7 +54,7 @@ export default function Timeline() {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4">
+    <div className="min-h-screen py-8 sm:py-12 px-4 sm:px-6">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -62,33 +62,37 @@ export default function Timeline() {
         className="max-w-2xl mx-auto"
       >
         {/* Title */}
-        <motion.div variants={titleVariants} className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-display text-fire-600 mb-4">
+        <motion.div variants={titleVariants} className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-display text-fire-600 mb-2 sm:mb-4">
             Our Journey
           </h1>
-          <p className="text-lg text-parchment-600">
+          <p className="text-base sm:text-lg text-parchment-600">
             Choose a chapter to begin your adventure
           </p>
         </motion.div>
 
-        {/* Timeline */}
+        {/* Timeline - Mobile: left-aligned, Desktop: centered alternating */}
         <div className="relative">
-          {/* Vertical timeline line */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-1 avatar-gradient rounded-full opacity-40" />
+          {/* Vertical timeline line - left on mobile, center on desktop */}
+          <div className="absolute left-4 sm:left-1/2 sm:transform sm:-translate-x-1/2 top-0 bottom-0 w-1 avatar-gradient rounded-full opacity-40" />
 
           {/* Chapter cards */}
-          <div className="space-y-12">
+          <div className="space-y-8 sm:space-y-12">
             {chapters.map((item, index) => (
               <div key={item.chapter.id} className="relative">
-                {/* Timeline node */}
+                {/* Timeline node - left on mobile, center on desktop */}
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: index * 0.2 + 0.5, type: 'spring' }}
                   className={`
-                    absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-8
-                    w-6 h-6 rounded-full
-                    border-4 border-white
+                    absolute
+                    left-4 sm:left-1/2
+                    transform -translate-x-1/2
+                    top-6 sm:top-8
+                    w-5 h-5 sm:w-6 sm:h-6
+                    rounded-full
+                    border-3 sm:border-4 border-white
                     shadow-lg
                     z-10
                     ${item.status === 'completed' ? 'bg-earth-500' : ''}
@@ -97,10 +101,11 @@ export default function Timeline() {
                   `}
                 />
 
-                {/* Card container - alternating sides */}
+                {/* Card container - full width left-aligned on mobile, alternating on desktop */}
                 <div className={`
-                  flex
-                  ${index % 2 === 0 ? 'justify-start md:pr-[55%]' : 'justify-end md:pl-[55%]'}
+                  pl-10 sm:pl-0
+                  sm:flex
+                  ${index % 2 === 0 ? 'sm:justify-start sm:pr-[52%]' : 'sm:justify-end sm:pl-[52%]'}
                 `}>
                   <ChapterCard
                     chapter={item.chapter}
@@ -117,11 +122,11 @@ export default function Timeline() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5 }}
-            className="relative mt-12"
+            className="relative mt-8 sm:mt-12"
           >
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 rounded-full border-4 border-white bg-parchment-300 shadow-lg z-10" />
-            <div className="text-center pt-10">
-              <p className="text-parchment-500 italic">More chapters coming soon...</p>
+            <div className="absolute left-4 sm:left-1/2 transform -translate-x-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-3 sm:border-4 border-white bg-parchment-300 shadow-lg z-10" />
+            <div className="pl-10 sm:pl-0 sm:text-center pt-2 sm:pt-10">
+              <p className="text-sm sm:text-base text-parchment-500 italic">More chapters coming soon...</p>
             </div>
           </motion.div>
         </div>

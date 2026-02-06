@@ -141,7 +141,7 @@ export default function DatePlanHub() {
   };
 
   return (
-    <div className="min-h-screen py-12 px-4 relative overflow-hidden">
+    <div className="min-h-screen py-8 sm:py-12 px-4 sm:px-6 relative overflow-hidden">
       {isComplete && <ConfettiEffect trigger={isComplete} />}
 
       <AnimatePresence mode="wait">
@@ -155,17 +155,17 @@ export default function DatePlanHub() {
             className="max-w-4xl mx-auto"
           >
             {/* Title */}
-            <motion.div variants={titleVariants} className="text-center mb-10">
-              <h1 className="text-4xl md:text-5xl font-display text-fire-600 mb-4">
+            <motion.div variants={titleVariants} className="text-center mb-6 sm:mb-10">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-display text-fire-600 mb-2 sm:mb-4">
                 Plan Our Date
               </h1>
-              <p className="text-lg text-parchment-600">
+              <p className="text-base sm:text-lg text-parchment-600">
                 What kind of date sounds perfect to you?
               </p>
             </motion.div>
 
             {/* Date Options Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {dateOptions.map((option) => (
                 <motion.button
                   key={option.id}
@@ -176,9 +176,9 @@ export default function DatePlanHub() {
                   className={`
                     relative
                     bg-parchment-200
-                    rounded-2xl
+                    rounded-xl sm:rounded-2xl
                     shadow-parchment
-                    p-6
+                    p-4 sm:p-6
                     parchment-texture
                     border-2
                     border-parchment-300
@@ -187,17 +187,18 @@ export default function DatePlanHub() {
                     duration-300
                     text-left
                     group
+                    active:scale-[0.98]
                   `}
                 >
                   {/* Icon */}
                   <div className={`
-                    w-16 h-16
-                    rounded-xl
+                    w-12 h-12 sm:w-16 sm:h-16
+                    rounded-lg sm:rounded-xl
                     bg-gradient-to-br ${option.gradient}
                     flex items-center justify-center
-                    text-3xl
+                    text-2xl sm:text-3xl
                     shadow-lg
-                    mb-4
+                    mb-3 sm:mb-4
                     group-hover:scale-110
                     transition-transform
                     duration-300
@@ -206,12 +207,12 @@ export default function DatePlanHub() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-xl font-display text-parchment-800 mb-2">
+                  <h3 className="text-lg sm:text-xl font-display text-parchment-800 mb-1 sm:mb-2">
                     {option.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-sm text-parchment-600">
+                  <p className="text-xs sm:text-sm text-parchment-600 pr-6">
                     {option.description}
                   </p>
 
@@ -221,7 +222,7 @@ export default function DatePlanHub() {
                     opacity-0 group-hover:opacity-100
                     transition-opacity duration-300
                   `}>
-                    <span className="text-2xl">→</span>
+                    <span className="text-xl sm:text-2xl">→</span>
                   </div>
                 </motion.button>
               ))}
@@ -232,11 +233,11 @@ export default function DatePlanHub() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
-              className="text-center mt-10"
+              className="text-center mt-8 sm:mt-10"
             >
               <button
                 onClick={handleBackToTimeline}
-                className="text-parchment-500 hover:text-parchment-700 transition-colors"
+                className="text-sm sm:text-base text-parchment-500 hover:text-parchment-700 transition-colors"
               >
                 ← Back to Timeline
               </button>
@@ -250,40 +251,40 @@ export default function DatePlanHub() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="max-w-md mx-auto text-center"
+            className="max-w-sm sm:max-w-md mx-auto text-center px-2"
           >
-            <div className="bg-parchment-200 rounded-2xl shadow-parchment p-8 parchment-texture">
+            <div className="bg-parchment-200 rounded-xl sm:rounded-2xl shadow-parchment p-6 sm:p-8 parchment-texture">
               {/* Selected option icon */}
               <div className={`
-                w-24 h-24
+                w-20 h-20 sm:w-24 sm:h-24
                 mx-auto
-                rounded-2xl
+                rounded-xl sm:rounded-2xl
                 bg-gradient-to-br ${selectedOption.gradient}
                 flex items-center justify-center
-                text-5xl
+                text-4xl sm:text-5xl
                 shadow-lg
-                mb-6
+                mb-4 sm:mb-6
               `}>
                 {selectedOption.icon}
               </div>
 
-              <h2 className="text-2xl font-display text-parchment-800 mb-2">
+              <h2 className="text-xl sm:text-2xl font-display text-parchment-800 mb-1 sm:mb-2">
                 {selectedOption.title}
               </h2>
-              <p className="text-parchment-600 mb-8">
+              <p className="text-sm sm:text-base text-parchment-600 mb-6 sm:mb-8">
                 {selectedOption.description}
               </p>
 
-              <p className="text-lg text-fire-600 font-medium mb-6">
+              <p className="text-base sm:text-lg text-fire-600 font-medium mb-4 sm:mb-6">
                 Is this your choice?
               </p>
 
-              <div className="flex gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleCancel}
-                  className="px-6 py-3 rounded-xl border-2 border-parchment-400 text-parchment-600 hover:bg-parchment-300 transition-colors"
+                  className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border-2 border-parchment-400 text-parchment-600 hover:bg-parchment-300 transition-colors text-sm sm:text-base order-2 sm:order-1"
                   disabled={isSubmitting}
                 >
                   Go Back
@@ -294,8 +295,8 @@ export default function DatePlanHub() {
                   onClick={handleConfirm}
                   disabled={isSubmitting}
                   className={`
-                    px-6 py-3
-                    rounded-xl
+                    px-5 sm:px-6 py-2.5 sm:py-3
+                    rounded-lg sm:rounded-xl
                     bg-gradient-to-r ${selectedOption.gradient}
                     text-white
                     font-medium
@@ -303,6 +304,8 @@ export default function DatePlanHub() {
                     hover:shadow-xl
                     transition-shadow
                     disabled:opacity-50
+                    text-sm sm:text-base
+                    order-1 sm:order-2
                   `}
                 >
                   {isSubmitting ? 'Saving...' : 'Yes, this is perfect!'}
@@ -317,27 +320,27 @@ export default function DatePlanHub() {
             key="complete"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-md mx-auto text-center"
+            className="max-w-sm sm:max-w-md mx-auto text-center px-2"
           >
-            <div className="bg-parchment-200 rounded-2xl shadow-parchment p-8 parchment-texture">
+            <div className="bg-parchment-200 rounded-xl sm:rounded-2xl shadow-parchment p-6 sm:p-8 parchment-texture">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', delay: 0.2 }}
-                className="text-6xl mb-6"
+                className="text-5xl sm:text-6xl mb-4 sm:mb-6"
               >
                 🎉
               </motion.div>
 
-              <h2 className="text-3xl font-display text-fire-600 mb-4">
+              <h2 className="text-2xl sm:text-3xl font-display text-fire-600 mb-3 sm:mb-4">
                 Perfect Choice!
               </h2>
 
-              <p className="text-lg text-parchment-700 mb-2">
+              <p className="text-base sm:text-lg text-parchment-700 mb-1 sm:mb-2">
                 You chose: <strong>{selectedOption.title}</strong>
               </p>
 
-              <p className="text-parchment-600 mb-8">
+              <p className="text-sm sm:text-base text-parchment-600 mb-6 sm:mb-8">
                 I can&apos;t wait for our {selectedOption.title.toLowerCase()}!
               </p>
 
@@ -345,7 +348,7 @@ export default function DatePlanHub() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleBackToTimeline}
-                className="px-8 py-3 rounded-xl bg-gradient-to-r from-fire-400 to-fire-600 text-white font-medium shadow-lg"
+                className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-fire-400 to-fire-600 text-white font-medium shadow-lg text-sm sm:text-base"
               >
                 Back to Timeline
               </motion.button>

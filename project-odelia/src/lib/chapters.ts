@@ -41,9 +41,9 @@ export const CHAPTERS: Chapter[] = [
 // LocalStorage key for progress
 const PROGRESS_KEY = 'odelia-chapter-progress';
 
-// Default progress state
+// Default progress state - Valentine is pre-completed since it was done before timeline existed
 const DEFAULT_PROGRESS: ChapterProgress = {
-  valentine: { completed: false },
+  valentine: { completed: true, completedAt: '2025-02-14T00:00:00.000Z' },
   datePlan: { completed: false },
 };
 
