@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sendDateSelectionNotification } from '@/lib/email';
 
 interface DateSelectionRequest {
-  option: string;
+  restaurant: string;
+  activity: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -10,23 +11,23 @@ export async function POST(request: NextRequest) {
     const body: DateSelectionRequest = await request.json();
 
     // Validate request
-    if (!body.option) {
+    if (!body.restaurant || !body.activity) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Invalid request. Option is required.',
+          message: 'Invalid request. Restaurant and activity are required.',
         },
         { status: 400 }
       );
     }
 
     // Send email notification
-    await sendDateSelectionNotification(body.option);
+    await sendDateSelectionNotification(body.restaurant, body.activity);
 
     return NextResponse.json(
       {
         success: true,
-        message: `Date selection "${body.option}" processed successfully!`,
+        message: `Date plan "${body.restaurant} + ${body.activity}" processed successfully!`,
       },
       { status: 200 }
     );
