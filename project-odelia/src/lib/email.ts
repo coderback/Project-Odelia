@@ -9,6 +9,48 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+export async function sendDateSelectionNotification(option: string) {
+  // Skip if email not configured
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || !process.env.NOTIFY_EMAIL) {
+    console.log('Email not configured, skipping notification');
+    return false;
+  }
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.NOTIFY_EMAIL,
+    subject: `Odelia chose a date! - ${option}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; text-align: center;">
+        <h1 style="color: #f97316; font-size: 36px; margin-bottom: 20px;">
+          Odelia chose a date!
+        </h1>
+        <div style="font-size: 60px; margin: 20px 0;">
+          ✨
+        </div>
+        <p style="font-size: 24px; color: #374151; margin-bottom: 10px;">
+          She selected:
+        </p>
+        <p style="font-size: 32px; color: #f97316; font-weight: bold; margin-bottom: 30px;">
+          ${option}
+        </p>
+        <p style="font-size: 16px; color: #6b7280;">
+          ${new Date().toLocaleString()}
+        </p>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Date selection notification email sent successfully!');
+    return true;
+  } catch (error) {
+    console.error('Failed to send date selection notification email:', error);
+    return false;
+  }
+}
+
 export async function sendYesNotification(dodgeCount: number = 0) {
   // Skip if email not configured
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || !process.env.NOTIFY_EMAIL) {

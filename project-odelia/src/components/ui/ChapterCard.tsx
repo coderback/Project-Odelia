@@ -1,0 +1,132 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { Chapter, ChapterStatus } from '@/lib/chapters';
+
+interface ChapterCardProps {
+  chapter: Chapter;
+  status: ChapterStatus;
+  index: number;
+}
+
+const statusColors = {
+  completed: {
+    border: 'border-earth-400',
+    bg: 'bg-earth-50/50',
+    text: 'text-earth-700',
+    badge: 'bg-earth-500 text-white',
+  },
+  available: {
+    border: 'border-fire-400',
+    bg: 'bg-fire-50/30',
+    text: 'text-fire-700',
+    badge: 'bg-fire-500 text-white',
+  },
+  locked: {
+    border: 'border-parchment-400',
+    bg: 'bg-parchment-300/30',
+    text: 'text-parchment-500',
+    badge: 'bg-parchment-400 text-parchment-600',
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, x: -30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    x: 0,
+    transition: {
+      delay: i * 0.2,
+      duration: 0.5,
+      ease: 'easeOut' as const,
+    },
+  }),
+  hover: {
+    scale: 1.02,
+    transition: { type: 'spring' as const, stiffness: 400, damping: 20 },
+  },
+};
+
+export default function ChapterCard({ chapter, status, index }: ChapterCardProps) {
+  const router = useRouter();
+  const colors = statusColors[status];
+  const isClickable = status !== 'locked';
+
+  const handleClick = () => {
+    if (isClickable) {
+      router.push(chapter.route);
+    }
+  };
+
+  return (
+    <motion.div
+      custom={index}
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+      whileHover={isClickable ? 'hover' : undefined}
+      onClick={handleClick}
+      className={`
+        relative
+        bg-parchment-200
+        ${colors.bg}
+        rounded-xl
+        shadow-parchment
+        p-6
+        w-full
+        max-w-md
+        parchment-texture
+        border-2
+        ${colors.border}
+        transition-all
+        duration-300
+        ${isClickable ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}
+      `}
+    >
+      {/* Status Badge */}
+      <div className={`absolute -top-3 right-4 px-3 py-1 rounded-full text-xs font-medium ${colors.badge}`}>
+        {status === 'completed' && '✓ Completed'}
+        {status === 'available' && '★ Available'}
+        {status === 'locked' && '🔒 Locked'}
+      </div>
+
+      {/* Chapter Icon */}
+      <div className="flex items-start gap-4">
+        <div className={`
+          w-14 h-14
+          rounded-full
+          flex items-center justify-center
+          text-2xl
+          ${status === 'locked' ? 'bg-parchment-300' : 'bg-white'}
+          shadow-md
+          border-2
+          ${colors.border}
+        `}>
+          {chapter.icon}
+        </div>
+
+        {/* Chapter Info */}
+        <div className="flex-1">
+          <h3 className={`text-xl font-display ${colors.text} mb-1`}>
+            {chapter.title}
+          </h3>
+          <p className={`text-sm ${status === 'locked' ? 'text-parchment-500' : 'text-parchment-600'}`}>
+            {chapter.description}
+          </p>
+        </div>
+      </div>
+
+      {/* Arrow indicator for available chapters */}
+      {isClickable && (
+        <motion.div
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 mt-2"
+          animate={{ x: [0, 5, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+        >
+          <span className={`text-xl ${colors.text}`}>→</span>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+}

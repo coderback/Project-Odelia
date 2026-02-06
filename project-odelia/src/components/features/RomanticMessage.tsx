@@ -3,7 +3,11 @@
 import { motion } from 'framer-motion';
 import { messageVariants } from '@/lib/animations';
 
-export default function RomanticMessage() {
+interface RomanticMessageProps {
+  onContinue?: () => void;
+}
+
+export default function RomanticMessage({ onContinue }: RomanticMessageProps) {
   return (
     <motion.div
       variants={messageVariants}
@@ -136,6 +140,25 @@ export default function RomanticMessage() {
           }}
         />
       </motion.div>
+
+      {/* Continue button */}
+      {onContinue && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 3.0, duration: 0.6 }}
+          className="pt-8"
+        >
+          <motion.button
+            onClick={onContinue}
+            className="px-8 py-3 rounded-xl bg-gradient-to-r from-fire-400 to-fire-600 text-white font-medium shadow-lg"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Continue
+          </motion.button>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

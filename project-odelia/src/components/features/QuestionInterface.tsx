@@ -13,7 +13,11 @@ import { Position, Answer } from '@/types';
 
 type InteractionState = 'idle' | 'selected' | 'animating' | 'complete';
 
-export default function QuestionInterface() {
+interface QuestionInterfaceProps {
+  onComplete?: () => void;
+}
+
+export default function QuestionInterface({ onComplete }: QuestionInterfaceProps) {
   const [state, setState] = useState<InteractionState>('idle');
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [ripplePosition, setRipplePosition] = useState<Position>({ x: 0, y: 0 });
@@ -170,7 +174,7 @@ export default function QuestionInterface() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <RomanticMessage />
+            <RomanticMessage onContinue={onComplete} />
           </motion.div>
         )}
       </AnimatePresence>
