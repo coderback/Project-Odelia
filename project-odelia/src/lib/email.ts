@@ -9,17 +9,31 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendDateSelectionNotification(restaurant: string, activity: string, meals?: { breakfast: string; lunch: string; dinner: string }) {
+export async function sendDateSelectionNotification(
+  restaurants: string[],
+  activities: string[],
+  meals?: { breakfast: string; lunch: string; dinner: string },
+) {
   // Skip if email not configured
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || !process.env.NOTIFY_EMAIL) {
     console.log('Email not configured, skipping notification');
     return false;
   }
 
+  const rankLabels = ['1st', '2nd', '3rd', '4th', '5th'];
+
+  const restaurantList = restaurants
+    .map((r, i) => `<p style="font-size: 18px; color: #374151; margin: 4px 0;"><strong>${rankLabels[i]}</strong> — ${r}</p>`)
+    .join('');
+
+  const activityList = activities
+    .map((a, i) => `<p style="font-size: 18px; color: #374151; margin: 4px 0;"><strong>${rankLabels[i]}</strong> — ${a}</p>`)
+    .join('');
+
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: process.env.NOTIFY_EMAIL,
-    subject: `Odelia planned a date! ${restaurant} + ${activity}`,
+    subject: `Odelia planned a date! Top picks: ${restaurants[0]} + ${activities[0]}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; text-align: center;">
         <h1 style="color: #f97316; font-size: 36px; margin-bottom: 20px;">
@@ -28,14 +42,10 @@ export async function sendDateSelectionNotification(restaurant: string, activity
         <div style="font-size: 60px; margin: 20px 0;">
           ✨
         </div>
-        <p style="font-size: 18px; color: #6b7280; margin-bottom: 8px;">Restaurant</p>
-        <p style="font-size: 28px; color: #f97316; font-weight: bold; margin-bottom: 24px;">
-          ${restaurant}
-        </p>
-        <p style="font-size: 18px; color: #6b7280; margin-bottom: 8px;">Activity</p>
-        <p style="font-size: 28px; color: #f97316; font-weight: bold; margin-bottom: 30px;">
-          ${activity}
-        </p>
+        <p style="font-size: 18px; color: #6b7280; margin-bottom: 8px;">Restaurant Ranking</p>
+        <div style="margin-bottom: 24px;">${restaurantList}</div>
+        <p style="font-size: 18px; color: #6b7280; margin-bottom: 8px;">Activity Ranking</p>
+        <div style="margin-bottom: 30px;">${activityList}</div>
         ${meals ? `
         <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
         <p style="font-size: 18px; color: #6b7280; margin-bottom: 12px;">Stay at Home Meals</p>

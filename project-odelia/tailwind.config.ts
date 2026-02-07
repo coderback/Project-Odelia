@@ -126,6 +126,8 @@ const config: Config = {
         sans: ['Herculanum', 'system-ui', 'sans-serif'],
         calligraphy: ['Herculanum', 'cursive'],
         display: ['"Avatar Airbender"', 'serif'],
+        cinzel: ['var(--font-cinzel)', 'serif'],
+        tangerine: ['var(--font-tangerine)', 'cursive'],
       },
       boxShadow: {
         'water-sm': '0 2px 8px rgba(14, 165, 233, 0.2)',
