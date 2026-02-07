@@ -16,81 +16,81 @@ interface DateOption {
 
 const restaurants: DateOption[] = [
   {
-    id: 'italian',
-    title: 'Italian Bistro',
-    description: 'Cozy pasta and candlelight',
-    icon: '🍝',
+    id: 'french-brasserie',
+    title: 'French Brasserie',
+    description: 'Elegant dining with classic French flair',
+    icon: '🥖',
     gradient: 'from-fire-400 to-fire-600',
   },
   {
-    id: 'sushi',
-    title: 'Sushi Bar',
-    description: 'Fresh rolls and good vibes',
-    icon: '🍣',
+    id: 'chinese',
+    title: 'Chinese',
+    description: 'Rich flavors and shared plates',
+    icon: '🥡',
     gradient: 'from-water-400 to-water-600',
   },
   {
-    id: 'steakhouse',
-    title: 'Steakhouse',
-    description: 'Classic and satisfying',
-    icon: '🥩',
+    id: 'british-brasserie',
+    title: 'British Brasserie',
+    description: 'Hearty comfort with a refined touch',
+    icon: '🍽️',
     gradient: 'from-earth-400 to-earth-600',
   },
   {
-    id: 'french',
-    title: 'French Café',
-    description: 'Charming and romantic',
-    icon: '🥐',
+    id: 'south-asian',
+    title: 'South Asian',
+    description: 'Vibrant spices and aromatic dishes',
+    icon: '🍛',
     gradient: 'from-air-400 to-air-600',
   },
   {
-    id: 'thai',
-    title: 'Thai Kitchen',
-    description: 'Bold flavors and warmth',
-    icon: '🍜',
+    id: 'caribbean',
+    title: 'Caribbean',
+    description: 'Tropical flavors and island warmth',
+    icon: '🌴',
     gradient: 'from-teal-400 to-teal-600',
   },
 ];
 
 const activities: DateOption[] = [
   {
-    id: 'movie',
-    title: 'Movie Night',
-    description: 'Cozy up for a film together',
-    icon: '🎬',
+    id: 'ice-skating',
+    title: 'Ice Skating',
+    description: 'Glide across the ice together',
+    icon: '⛸️',
     gradient: 'from-water-400 to-water-600',
-  },
-  {
-    id: 'bowling',
-    title: 'Bowling',
-    description: 'A little friendly competition',
-    icon: '🎳',
-    gradient: 'from-fire-400 to-fire-600',
-  },
-  {
-    id: 'minigolf',
-    title: 'Mini Golf',
-    description: 'Playful and fun',
-    icon: '⛳',
-    gradient: 'from-earth-400 to-earth-600',
-  },
-  {
-    id: 'stargazing',
-    title: 'Stargazing Walk',
-    description: 'A romantic evening stroll',
-    icon: '🌙',
-    gradient: 'from-air-400 to-air-600',
   },
   {
     id: 'arcade',
     title: 'Arcade',
     description: 'Retro fun and high scores',
     icon: '🕹️',
+    gradient: 'from-fire-400 to-fire-600',
+  },
+  {
+    id: 'escape-room',
+    title: 'Escape Room',
+    description: 'Solve puzzles and escape together',
+    icon: '🔐',
+    gradient: 'from-earth-400 to-earth-600',
+  },
+  {
+    id: 'go-karting',
+    title: 'Go Karting',
+    description: 'Race to the finish line',
+    icon: '🏎️',
+    gradient: 'from-air-400 to-air-600',
+  },
+  {
+    id: 'bowling',
+    title: 'Bowling',
+    description: 'A little friendly competition',
+    icon: '🎳',
     gradient: 'from-teal-400 to-teal-600',
   },
 ];
 
-const TOTAL_STEPS = 2;
+const TOTAL_STEPS = 3;
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -133,6 +133,7 @@ export default function DatePlanHub() {
   const [step, setStep] = useState(1);
   const [selectedRestaurant, setSelectedRestaurant] = useState<DateOption | null>(null);
   const [selectedActivity, setSelectedActivity] = useState<DateOption | null>(null);
+  const [meals, setMeals] = useState({ breakfast: '', lunch: '', dinner: '' });
   const [isComplete, setIsComplete] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -143,11 +144,13 @@ export default function DatePlanHub() {
 
   const handlePickActivity = (option: DateOption) => {
     setSelectedActivity(option);
-    setStep(3); // review
+    setStep(3); // meals
   };
 
+  const allMealsFilled = meals.breakfast.trim() && meals.lunch.trim() && meals.dinner.trim();
+
   const handleConfirm = async () => {
-    if (!selectedRestaurant || !selectedActivity || isSubmitting) return;
+    if (!selectedRestaurant || !selectedActivity || !allMealsFilled || isSubmitting) return;
 
     setIsSubmitting(true);
 
@@ -158,6 +161,11 @@ export default function DatePlanHub() {
         body: JSON.stringify({
           restaurant: selectedRestaurant.title,
           activity: selectedActivity.title,
+          meals: {
+            breakfast: meals.breakfast.trim(),
+            lunch: meals.lunch.trim(),
+            dinner: meals.dinner.trim(),
+          },
         }),
       });
 
@@ -183,12 +191,16 @@ export default function DatePlanHub() {
     ? 'Pick a Restaurant'
     : step === 2
     ? 'Pick an Activity'
+    : step === 3
+    ? 'Stay at Home Meals'
     : 'Your Date Plan';
 
   const stepSubtitle = step === 1
     ? 'Where should we eat?'
     : step === 2
     ? 'What should we do?'
+    : step === 3
+    ? 'What should we cook?'
     : 'Here\'s what you\'ve planned!';
 
   const currentOptions = step === 1 ? restaurants : activities;
@@ -342,8 +354,114 @@ export default function DatePlanHub() {
           </motion.div>
         )}
 
-        {/* Step 3: Review */}
+        {/* Step 3: Stay at Home Meals */}
         {step === 3 && !isComplete && selectedRestaurant && selectedActivity && (
+          <motion.div
+            key="step-3-meals"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -30 }}
+            className="max-w-sm sm:max-w-lg mx-auto px-2"
+          >
+            {/* Progress dots */}
+            <div className="text-center mb-6 sm:mb-10">
+              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-2 sm:gap-3">
+                    <div className={`
+                      w-8 h-8 sm:w-10 sm:h-10
+                      rounded-full
+                      flex items-center justify-center
+                      text-xs sm:text-sm font-medium
+                      transition-all duration-300
+                      ${i + 1 < step
+                        ? 'bg-earth-500 text-white'
+                        : i + 1 === step
+                        ? 'bg-fire-500 text-white shadow-lg scale-110'
+                        : 'bg-parchment-300 text-parchment-500'
+                      }
+                    `}>
+                      {i + 1 < step ? '✓' : i + 1}
+                    </div>
+                    {i < TOTAL_STEPS - 1 && (
+                      <div className={`
+                        w-8 sm:w-16 h-0.5
+                        transition-colors duration-300
+                        ${i + 1 < step ? 'bg-earth-400' : 'bg-parchment-300'}
+                      `} />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <p className="text-xs sm:text-sm text-parchment-500 mb-2">
+                Step {step} of {TOTAL_STEPS}
+              </p>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-display text-fire-600 mb-2 sm:mb-3">
+                {stepTitle}
+              </h1>
+              <p className="text-base sm:text-lg text-parchment-600">
+                {stepSubtitle}
+              </p>
+
+              {/* Selection pills */}
+              <div className="mt-3 sm:mt-4 flex flex-wrap items-center justify-center gap-2">
+                <div className="inline-flex items-center gap-2 bg-parchment-200 border border-parchment-300 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+                  <span className="text-lg sm:text-xl">{selectedRestaurant.icon}</span>
+                  <span className="text-xs sm:text-sm text-parchment-700">{selectedRestaurant.title}</span>
+                </div>
+                <div className="inline-flex items-center gap-2 bg-parchment-200 border border-parchment-300 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+                  <span className="text-lg sm:text-xl">{selectedActivity.icon}</span>
+                  <span className="text-xs sm:text-sm text-parchment-700">{selectedActivity.title}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Meal inputs */}
+            <div className="bg-parchment-200 rounded-xl sm:rounded-2xl shadow-parchment p-6 sm:p-8 parchment-texture space-y-5 sm:space-y-6">
+              {[
+                { key: 'breakfast' as const, label: 'Breakfast', icon: '☀️' },
+                { key: 'lunch' as const, label: 'Lunch', icon: '🌤️' },
+                { key: 'dinner' as const, label: 'Dinner', icon: '🌙' },
+              ].map((meal) => (
+                <div key={meal.key}>
+                  <label className="flex items-center gap-2 text-sm sm:text-base font-medium text-parchment-700 mb-2">
+                    <span className="text-xl">{meal.icon}</span>
+                    {meal.label}
+                  </label>
+                  <input
+                    type="text"
+                    value={meals[meal.key]}
+                    onChange={(e) => setMeals((prev) => ({ ...prev, [meal.key]: e.target.value }))}
+                    placeholder={`What's for ${meal.label.toLowerCase()}?`}
+                    className="w-full px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border-2 border-parchment-300 bg-white/60 text-parchment-800 placeholder-parchment-400 focus:border-fire-400 focus:outline-none transition-colors text-sm sm:text-base"
+                  />
+                </div>
+              ))}
+
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-2">
+                <button
+                  onClick={() => setStep(2)}
+                  className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border-2 border-parchment-400 text-parchment-600 hover:bg-parchment-300 transition-colors text-sm sm:text-base order-2 sm:order-1"
+                >
+                  ← Back
+                </button>
+                <motion.button
+                  whileHover={allMealsFilled ? { scale: 1.05 } : {}}
+                  whileTap={allMealsFilled ? { scale: 0.95 } : {}}
+                  onClick={() => allMealsFilled && setStep(4)}
+                  disabled={!allMealsFilled}
+                  className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-fire-400 to-fire-600 text-white font-medium shadow-lg hover:shadow-xl transition-shadow disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base order-1 sm:order-2"
+                >
+                  Next →
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Step 4: Review */}
+        {step === 4 && !isComplete && selectedRestaurant && selectedActivity && (
           <motion.div
             key="review"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -357,7 +475,7 @@ export default function DatePlanHub() {
               </h2>
 
               {/* Selections */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                 {/* Restaurant card */}
                 <div className="bg-white/60 rounded-xl p-4 sm:p-5 border border-parchment-300">
                   <p className="text-[10px] sm:text-xs text-parchment-500 uppercase tracking-wider mb-2">Restaurant</p>
@@ -405,6 +523,22 @@ export default function DatePlanHub() {
                 </div>
               </div>
 
+              {/* Meals */}
+              <div className="bg-white/60 rounded-xl p-4 sm:p-5 border border-parchment-300 mb-6 sm:mb-8">
+                <p className="text-[10px] sm:text-xs text-parchment-500 uppercase tracking-wider mb-3">Stay at Home Meals</p>
+                <div className="space-y-2">
+                  <p className="text-sm sm:text-base text-parchment-800">
+                    <span className="text-lg mr-1.5">☀️</span> {meals.breakfast}
+                  </p>
+                  <p className="text-sm sm:text-base text-parchment-800">
+                    <span className="text-lg mr-1.5">🌤️</span> {meals.lunch}
+                  </p>
+                  <p className="text-sm sm:text-base text-parchment-800">
+                    <span className="text-lg mr-1.5">🌙</span> {meals.dinner}
+                  </p>
+                </div>
+              </div>
+
               <p className="text-base sm:text-lg text-fire-600 font-medium mb-4 sm:mb-6">
                 Does this look perfect?
               </p>
@@ -413,7 +547,7 @@ export default function DatePlanHub() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setStep(2)}
+                  onClick={() => setStep(3)}
                   className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border-2 border-parchment-400 text-parchment-600 hover:bg-parchment-300 transition-colors text-sm sm:text-base order-2 sm:order-1"
                   disabled={isSubmitting}
                 >
@@ -458,10 +592,15 @@ export default function DatePlanHub() {
               <p className="text-sm sm:text-base text-parchment-700 mb-1">
                 {selectedRestaurant.icon} {selectedRestaurant.title}
               </p>
-              <p className="text-xs sm:text-sm text-parchment-500 mb-3">+</p>
-              <p className="text-sm sm:text-base text-parchment-700 mb-4 sm:mb-6">
+              <p className="text-xs sm:text-sm text-parchment-500 mb-1">+</p>
+              <p className="text-sm sm:text-base text-parchment-700 mb-1">
                 {selectedActivity.icon} {selectedActivity.title}
               </p>
+              <p className="text-xs sm:text-sm text-parchment-500 mb-1">+</p>
+              <p className="text-xs sm:text-sm text-parchment-700 mb-0.5">
+                ☀️ {meals.breakfast} · 🌤️ {meals.lunch} · 🌙 {meals.dinner}
+              </p>
+              <div className="mb-4 sm:mb-6" />
 
               <p className="text-sm sm:text-base text-parchment-600 mb-6 sm:mb-8">
                 I can&apos;t wait for our date!

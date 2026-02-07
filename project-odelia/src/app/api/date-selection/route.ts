@@ -4,6 +4,7 @@ import { sendDateSelectionNotification } from '@/lib/email';
 interface DateSelectionRequest {
   restaurant: string;
   activity: string;
+  meals?: { breakfast: string; lunch: string; dinner: string };
 }
 
 export async function POST(request: NextRequest) {
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send email notification
-    await sendDateSelectionNotification(body.restaurant, body.activity);
+    await sendDateSelectionNotification(body.restaurant, body.activity, body.meals);
 
     return NextResponse.json(
       {

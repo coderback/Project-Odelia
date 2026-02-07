@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendDateSelectionNotification(restaurant: string, activity: string) {
+export async function sendDateSelectionNotification(restaurant: string, activity: string, meals?: { breakfast: string; lunch: string; dinner: string }) {
   // Skip if email not configured
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || !process.env.NOTIFY_EMAIL) {
     console.log('Email not configured, skipping notification');
@@ -36,6 +36,13 @@ export async function sendDateSelectionNotification(restaurant: string, activity
         <p style="font-size: 28px; color: #f97316; font-weight: bold; margin-bottom: 30px;">
           ${activity}
         </p>
+        ${meals ? `
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+        <p style="font-size: 18px; color: #6b7280; margin-bottom: 12px;">Stay at Home Meals</p>
+        <p style="font-size: 20px; color: #374151; margin-bottom: 8px;">☀️ Breakfast: <strong>${meals.breakfast}</strong></p>
+        <p style="font-size: 20px; color: #374151; margin-bottom: 8px;">🌤️ Lunch: <strong>${meals.lunch}</strong></p>
+        <p style="font-size: 20px; color: #374151; margin-bottom: 24px;">🌙 Dinner: <strong>${meals.dinner}</strong></p>
+        ` : ''}
         <p style="font-size: 16px; color: #6b7280;">
           ${new Date().toLocaleString()}
         </p>
