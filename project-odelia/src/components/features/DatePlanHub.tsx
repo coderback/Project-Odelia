@@ -9,85 +9,24 @@ import ConfettiEffect from '@/components/ui/ConfettiEffect';
 interface DateOption {
   id: string;
   title: string;
-  description: string;
   icon: string;
   gradient: string;
 }
 
 const restaurants: DateOption[] = [
-  {
-    id: 'french-brasserie',
-    title: 'French Brasserie',
-    description: 'Elegant dining with classic French flair',
-    icon: '🥖',
-    gradient: 'from-rose-300 to-rose-500',
-  },
-  {
-    id: 'chinese',
-    title: 'Chinese',
-    description: 'Rich flavors and shared plates',
-    icon: '🥡',
-    gradient: 'from-pink-300 to-pink-500',
-  },
-  {
-    id: 'british-brasserie',
-    title: 'British Brasserie',
-    description: 'Hearty comfort with a refined touch',
-    icon: '🍽️',
-    gradient: 'from-red-300 to-red-500',
-  },
-  {
-    id: 'south-asian',
-    title: 'South Asian',
-    description: 'Vibrant spices and aromatic dishes',
-    icon: '🍛',
-    gradient: 'from-fuchsia-300 to-fuchsia-500',
-  },
-  {
-    id: 'caribbean',
-    title: 'Caribbean',
-    description: 'Tropical flavors and island warmth',
-    icon: '🌴',
-    gradient: 'from-rose-400 to-pink-500',
-  },
+  { id: 'french-brasserie', title: 'French Brasserie', icon: '🥖', gradient: 'from-rose-300 to-rose-500' },
+  { id: 'chinese', title: 'Chinese', icon: '🥡', gradient: 'from-pink-300 to-pink-500' },
+  { id: 'british-brasserie', title: 'British Brasserie', icon: '🍽️', gradient: 'from-red-300 to-red-500' },
+  { id: 'south-asian', title: 'South Asian', icon: '🍛', gradient: 'from-fuchsia-300 to-fuchsia-500' },
+  { id: 'caribbean', title: 'Caribbean', icon: '🌴', gradient: 'from-rose-400 to-pink-500' },
 ];
 
 const activities: DateOption[] = [
-  {
-    id: 'ice-skating',
-    title: 'Ice Skating',
-    description: 'Glide across the ice together',
-    icon: '⛸️',
-    gradient: 'from-pink-300 to-rose-400',
-  },
-  {
-    id: 'arcade',
-    title: 'Arcade',
-    description: 'Retro fun and high scores',
-    icon: '🕹️',
-    gradient: 'from-red-300 to-rose-500',
-  },
-  {
-    id: 'escape-room',
-    title: 'Escape Room',
-    description: 'Solve puzzles and escape together',
-    icon: '🔐',
-    gradient: 'from-rose-300 to-red-400',
-  },
-  {
-    id: 'go-karting',
-    title: 'Go Karting',
-    description: 'Race to the finish line',
-    icon: '🏎️',
-    gradient: 'from-fuchsia-300 to-pink-500',
-  },
-  {
-    id: 'bowling',
-    title: 'Bowling',
-    description: 'A little friendly competition',
-    icon: '🎳',
-    gradient: 'from-pink-400 to-rose-500',
-  },
+  { id: 'ice-skating', title: 'Ice Skating', icon: '⛸️', gradient: 'from-pink-300 to-rose-400' },
+  { id: 'arcade', title: 'Arcade', icon: '🕹️', gradient: 'from-red-300 to-rose-500' },
+  { id: 'escape-room', title: 'Escape Room', icon: '🔐', gradient: 'from-rose-300 to-red-400' },
+  { id: 'go-karting', title: 'Go Karting', icon: '🏎️', gradient: 'from-fuchsia-300 to-pink-500' },
+  { id: 'bowling', title: 'Bowling', icon: '🎳', gradient: 'from-pink-400 to-rose-500' },
 ];
 
 const TOTAL_STEPS = 3;
@@ -369,9 +308,7 @@ export default function DatePlanHub() {
                       {option.title}
                     </h3>
 
-                    <p className="text-xs sm:text-sm text-gray-500 pr-6">
-                      {option.description}
-                    </p>
+
                   </motion.button>
                 );
               })}
