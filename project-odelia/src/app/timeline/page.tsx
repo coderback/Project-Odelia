@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function TimelinePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-parchment-100 via-parchment-200 to-parchment-100">
+    <main className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-50">
       <Timeline />
     </main>
   );

@@ -12,22 +12,22 @@ interface ChapterCardProps {
 
 const statusColors = {
   completed: {
-    border: 'border-earth-400',
-    bg: 'bg-earth-50/50',
-    text: 'text-earth-700',
-    badge: 'bg-earth-500 text-white',
+    border: 'border-rose-300',
+    bg: 'bg-rose-50/50',
+    text: 'text-rose-600',
+    badge: 'bg-rose-400 text-white',
   },
   available: {
-    border: 'border-fire-400',
-    bg: 'bg-fire-50/30',
-    text: 'text-fire-700',
-    badge: 'bg-fire-500 text-white',
+    border: 'border-red-400',
+    bg: 'bg-red-50/30',
+    text: 'text-red-600',
+    badge: 'bg-red-500 text-white',
   },
   locked: {
-    border: 'border-parchment-400',
-    bg: 'bg-parchment-300/30',
-    text: 'text-parchment-500',
-    badge: 'bg-parchment-400 text-parchment-600',
+    border: 'border-pink-200',
+    bg: 'bg-pink-50/30',
+    text: 'text-pink-300',
+    badge: 'bg-pink-100 text-pink-400',
   },
 };
 
@@ -69,14 +69,13 @@ export default function ChapterCard({ chapter, status, index }: ChapterCardProps
       onClick={handleClick}
       className={`
         relative
-        bg-parchment-200
+        bg-white/80 backdrop-blur-sm
         ${colors.bg}
         rounded-xl
-        shadow-parchment
+        shadow-md shadow-rose-100
         p-4 sm:p-6
         w-full
         max-w-md
-        parchment-texture
         border-2
         ${colors.border}
         transition-all
@@ -86,8 +85,8 @@ export default function ChapterCard({ chapter, status, index }: ChapterCardProps
     >
       {/* Status Badge */}
       <div className={`absolute -top-2.5 sm:-top-3 right-3 sm:right-4 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium ${colors.badge}`}>
-        {status === 'completed' && '✓ Completed'}
-        {status === 'available' && '★ Available'}
+        {status === 'completed' && '♥ Completed'}
+        {status === 'available' && '♥ Available'}
         {status === 'locked' && '🔒 Locked'}
       </div>
 
@@ -99,7 +98,7 @@ export default function ChapterCard({ chapter, status, index }: ChapterCardProps
           flex items-center justify-center
           text-xl sm:text-2xl
           flex-shrink-0
-          ${status === 'locked' ? 'bg-parchment-300' : 'bg-white'}
+          ${status === 'locked' ? 'bg-pink-50' : 'bg-white'}
           shadow-md
           border-2
           ${colors.border}
@@ -109,10 +108,10 @@ export default function ChapterCard({ chapter, status, index }: ChapterCardProps
 
         {/* Chapter Info */}
         <div className="flex-1 min-w-0 pr-6 sm:pr-8">
-          <h3 className={`text-base sm:text-xl font-display ${colors.text} mb-0.5 sm:mb-1 truncate`}>
+          <h3 className={`text-base sm:text-xl font-cinzel ${colors.text} mb-0.5 sm:mb-1 truncate`}>
             {chapter.title}
           </h3>
-          <p className={`text-xs sm:text-sm leading-snug ${status === 'locked' ? 'text-parchment-500' : 'text-parchment-600'}`}>
+          <p className={`text-xs sm:text-sm leading-snug ${status === 'locked' ? 'text-pink-300' : 'text-gray-500'}`}>
             {chapter.description}
           </p>
         </div>

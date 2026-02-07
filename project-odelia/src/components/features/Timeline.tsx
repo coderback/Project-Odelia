@@ -36,7 +36,6 @@ export default function Timeline() {
 
   useEffect(() => {
     setMounted(true);
-    // Get chapter statuses from localStorage
     const chaptersWithStatus = CHAPTERS.map(chapter => ({
       chapter,
       status: getChapterStatus(chapter),
@@ -44,11 +43,10 @@ export default function Timeline() {
     setChapters(chaptersWithStatus);
   }, []);
 
-  // Prevent hydration mismatch
   if (!mounted) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-fire-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-rose-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -63,24 +61,24 @@ export default function Timeline() {
       >
         {/* Title */}
         <motion.div variants={titleVariants} className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-display text-fire-600 mb-2 sm:mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-cinzel text-rose-600 mb-2 sm:mb-4">
             Our Journey
           </h1>
-          <p className="text-base sm:text-lg text-parchment-600">
+          <p className="text-base sm:text-lg text-rose-400">
             Choose a chapter to begin your adventure
           </p>
         </motion.div>
 
-        {/* Timeline - Mobile: left-aligned, Desktop: centered alternating */}
+        {/* Timeline */}
         <div className="relative">
-          {/* Vertical timeline line - left on mobile, center on desktop */}
-          <div className="absolute left-4 sm:left-1/2 sm:transform sm:-translate-x-1/2 top-0 bottom-0 w-1 avatar-gradient rounded-full opacity-40" />
+          {/* Vertical timeline line */}
+          <div className="absolute left-4 sm:left-1/2 sm:transform sm:-translate-x-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-rose-300 via-pink-400 to-rose-300 rounded-full opacity-40" />
 
           {/* Chapter cards */}
           <div className="space-y-8 sm:space-y-12">
             {chapters.map((item, index) => (
               <div key={item.chapter.id} className="relative">
-                {/* Timeline node - left on mobile, center on desktop */}
+                {/* Timeline node */}
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
@@ -95,13 +93,13 @@ export default function Timeline() {
                     border-3 sm:border-4 border-white
                     shadow-lg
                     z-10
-                    ${item.status === 'completed' ? 'bg-earth-500' : ''}
-                    ${item.status === 'available' ? 'bg-fire-500 animate-pulse' : ''}
-                    ${item.status === 'locked' ? 'bg-parchment-400' : ''}
+                    ${item.status === 'completed' ? 'bg-rose-400' : ''}
+                    ${item.status === 'available' ? 'bg-red-500 animate-pulse' : ''}
+                    ${item.status === 'locked' ? 'bg-pink-200' : ''}
                   `}
                 />
 
-                {/* Card container - full width left-aligned on mobile, alternating on desktop */}
+                {/* Card container */}
                 <div className={`
                   pl-10 sm:pl-0
                   sm:flex
@@ -124,9 +122,9 @@ export default function Timeline() {
             transition={{ delay: 1.5 }}
             className="relative mt-8 sm:mt-12"
           >
-            <div className="absolute left-4 sm:left-1/2 transform -translate-x-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-3 sm:border-4 border-white bg-parchment-300 shadow-lg z-10" />
+            <div className="absolute left-4 sm:left-1/2 transform -translate-x-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-3 sm:border-4 border-white bg-pink-100 shadow-lg z-10" />
             <div className="pl-10 sm:pl-0 sm:text-center pt-2 sm:pt-10">
-              <p className="text-sm sm:text-base text-parchment-500 italic">More chapters coming soon...</p>
+              <p className="text-sm sm:text-base text-rose-300 italic">More chapters coming soon...</p>
             </div>
           </motion.div>
         </div>
